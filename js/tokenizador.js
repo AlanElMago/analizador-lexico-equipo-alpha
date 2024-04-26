@@ -1,20 +1,3 @@
-/*
-const TipoSimbolos = {
-  PalabraClave: 0,
-  Especial: 1,
-  EspacioBlanco: 999,
-}
-
-var tablaSimbolos = {
-  "equipo": TipoSimbolos.PalabraClave,
-  "(":      TipoSimbolos.Especial,
-  ")":      TipoSimbolos.Especial,
-  " ":      TipoSimbolos.EspacioBlanco,
-  "\t":     TipoSimbolos.EspacioBlanco,
-  "\n":     TipoSimbolos.EspacioBlanco
-}
-*/
-
 const tokenizar = (texto) => {
   const extraerSubcadenaConUnRegex = (cadena, regex) => {
     let match = cadena.match(regex);
