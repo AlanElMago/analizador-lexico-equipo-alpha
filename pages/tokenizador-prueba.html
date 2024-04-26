@@ -8,19 +8,20 @@
   <p>Entrada:</p>
   <input id="entrada" size="80" />
   <p>Salida:</p>
-  <textarea id="salida" cols="80" rows="5" readonly></textarea>
+  <textarea id="salida" cols="80" rows="20" readonly></textarea>
   <button id="btn-tokenizar">Tokenizar</button>
 </body>
 <!-- Scripts -->
-<script src="../js/tokenizador.js"></script>
-<script>
+<script type="module">
+  import { tokenizar } from '../js/tokenizador.js';
+
   const button = document.querySelector('#btn-tokenizar');
   const entrada = document.querySelector('#entrada');
   const salida = document.querySelector('#salida');
 
   button.addEventListener('click', () => {
     const tokens = tokenizar(entrada.value);
-    salida.value = tokens.join('    ');
+    salida.value = tokens.join('\n');
   });
 </script>
 </html>
