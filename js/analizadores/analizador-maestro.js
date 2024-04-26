@@ -1,7 +1,7 @@
 import { tokenizar } from '../tokenizador.js';
 
 import { instruccion00 } from './instruccion-00.js';
-// import { instruccion01 } from './instruccion-01.js';
+import { instruccion01 } from './instruccion-01.js';
 // import { instruccion02 } from './instruccion-02.js';
 // import { instruccion03 } from './instruccion-03.js';
 // import { instruccion04 } from './instruccion-04.js';
@@ -35,7 +35,7 @@ export const analizar = (texto) => {
     case "equipo":
       return instruccion00(tokens);
     case "imprimir":
-      // return instruccion01(tokens);
+      return instruccion01(tokens);
     case "entrada":
       // return instruccion02(tokens);
     case "si":
