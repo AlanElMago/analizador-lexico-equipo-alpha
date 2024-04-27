@@ -5,7 +5,7 @@ import { instruccion01 } from './instruccion-01.js';
 import { instruccion02 } from './instruccion-02.js';
 import { instruccion03 } from './instruccion-03.js';
 import { instruccion04 } from './instruccion-04.js';
-// import { instruccion05 } from './instruccion-05.js';
+import { instruccion05 } from './instruccion-05.js';
 // import { instruccion06 } from './instruccion-06.js';
 // import { instruccion07 } from './instruccion-07.js';
 // import { instruccion08 } from './instruccion-08.js';
@@ -45,7 +45,7 @@ export const analizar = (texto) => {
     case "para":
       return instruccion04(tokens);
     case "mientras":
-      // return instruccion05(tokens);
+      return instruccion05(tokens);
     case "suma":
       // return instruccion06(tokens);
     case "longitud":
