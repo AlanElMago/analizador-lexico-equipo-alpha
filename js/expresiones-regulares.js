@@ -1,3 +1,10 @@
+export const Tipo = {
+  Id: "id",
+  Numero: "número",
+  Literal: "literal",
+  Comparacion: "operación de comparación"
+}
+
 export const Regexs = {
   Id: /^[a-zA-Z_][a-zA-Z0-9_]*/,
   Numero: /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/,
@@ -10,22 +17,22 @@ export const esNumero = (token) => Regexs.Numero.test(token);
 export const esLiteral = (token) => Regexs.Literal.test(token);
 export const esComparacion = (token) => Regexs.Comparacion.test(token);
 
-export const tipoSimbolo = (token) => {
+export const obtenerTipoSimbolo = (token) => {
   if (esId(token)) {
-    return "id";
+    return Tipo.Id;
   }
   
   if (esNumero(token)) {
-    return "numero";
+    return Tipo.Numero;
   }
   
   if (esLiteral(token)) {
-    return "literal";
+    return Tipo.Literal;
   }
   
   if (esComparacion(token)) {
-    return "operacion de comparacion";
+    return Tipo.Comparacion;
   }
 
-  return "desconocido";
+  return token;
 }

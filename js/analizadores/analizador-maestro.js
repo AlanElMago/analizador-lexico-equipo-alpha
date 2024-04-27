@@ -80,3 +80,7 @@ export const analizar = (texto) => {
       return `Símbolo no reconocido: ${nombre_instruccion}`;
   }
 }
+
+export const generarMensajeErrorSintaxis = (tokenActual, tokensValidos) => {
+  return `Error de sintaxis: se esperaba uno de los siguientes símbolos: ${tokensValidos.join(", ")}. Símbolo encontrado: ${tokenActual}`;
+}
