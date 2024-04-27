@@ -9,7 +9,7 @@ export const Regexs = {
   Id: /^[a-zA-Z_][a-zA-Z0-9_]*/,
   Numero: /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/,
   Literal: /^(['"])(.*?)(\1)|("""(.*?)""")|('''(.*?)''')/,
-  Comparacion: /^(==|!=|>=|<=)/
+  Comparacion: /^(==|!=|>=|<=|>|<)/
 }
 
 export const esId = (token) => Regexs.Id.test(token);
