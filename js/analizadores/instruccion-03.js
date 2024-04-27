@@ -44,8 +44,8 @@ export const instruccion03 = (tokens) => {
     return lineasTexto;
   }
 
-  lineasTexto[1] = `${tokens[1]}: el primer símbolo para comparar`;
-  lineasTexto.push(`${tokens[2]}: operación de comparación (${obtenerTipoSimbolo(tokens[2])})`);
+  lineasTexto[1] = `${tokens[1]}: el primer símbolo para comparar (${obtenerTipoSimbolo(tokens[1])})`;
+  lineasTexto.push(`${tokens[2]}: operación de comparación`);
 
   // Token 3
   if (!sintaxisValida[3].includes(obtenerTipoSimbolo(tokens[3]))) {
@@ -54,7 +54,7 @@ export const instruccion03 = (tokens) => {
     return lineasTexto;
   }
 
-  lineasTexto.push(`${tokens[3]}: el segundo símbolo para comparar`);
+  lineasTexto.push(`${tokens[3]}: el segundo símbolo para comparar (${obtenerTipoSimbolo(tokens[3])})`);
 
   // Token 4
   if (!sintaxisValida[4].includes(obtenerTipoSimbolo(tokens[4]))) {
