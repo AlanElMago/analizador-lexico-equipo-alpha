@@ -1,5 +1,5 @@
 export const Tipo = {
-  Id: "id",
+  Id: "identificador",
   Numero: "número",
   Literal: "literal",
   Comparacion: "operación de comparación"
