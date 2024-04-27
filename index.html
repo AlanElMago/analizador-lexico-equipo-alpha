@@ -10,8 +10,8 @@
   <p>Entrada:</p>
   <input id="entrada" size="80"/>
   <p>Salida:</p>
-  <textarea id="salida" cols="80" rows="20"></textarea>
-  <button id="btn-analizar">Click me!</button>
+  <textarea id="salida" cols="80" rows="20" readonly></textarea>
+  <button id="btn-analizar">Analizar</button>
 </body>
 <!-- Scripts -->
 <script type="module">
@@ -23,8 +23,8 @@
 
   btnAnalizar.addEventListener('click', () => {
     const texto = entrada.value;
-    const resultado = analizar(texto);
-    salida.value = resultado;
+    const lineasTexto = analizar(texto);
+    salida.value = lineasTexto.join('\n');
   });
 </script>
 </html>

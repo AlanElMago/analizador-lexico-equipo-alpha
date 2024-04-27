@@ -1,36 +1,50 @@
-import { esId, esLiteral, esNumero } from "../expresiones-regulares.js";
-import { tipoSimbolo } from "../expresiones-regulares.js";
+import { generarMensajeErrorSintaxis } from "./analizador-maestro.js";
+import { obtenerTipoSimbolo } from "../expresiones-regulares.js";
+import { Tipo } from "../expresiones-regulares.js";
 
 export const instruccion01 = (tokens) => {
+  const sintaxisValida = [
+    ["imprimir"],                              // Token 0
+    ["("],                                     // Token 1
+    [")", Tipo.Id, Tipo.Numero, Tipo.Literal], // Token 2
+    [")"]                                      // Token 3
+  ];
+
   // Token 0
-  let texto = `${tokens[0]}: nombre de la instrucción\n`;
+  let lineasTexto = [`${tokens[0]}: nombre de la instrucción`];
 
   // Token 1
-  if (tokens[1] !== "(") {
-    return `${texto}Error de sintaxis: se esperaba '('\n`;
+  if (!sintaxisValida[1].includes(obtenerTipoSimbolo(tokens[1]))) {
+    lineasTexto.push(generarMensajeErrorSintaxis(tokens[1], sintaxisValida[1]));
+
+    return lineasTexto;
   }
 
-  texto += `${tokens[1]}: paréntesis de apertura de la instrucción\n`;
+  lineasTexto.push(`${tokens[1]}: paréntesis de apertura de la instrucción`);
 
   // Token 2
-  if (tokens[2] === ")") {
-    texto += `${tokens[2]}: paréntesis de cierre de la instrucción\n`;
-    return texto;
+    if (!sintaxisValida[2].includes(obtenerTipoSimbolo(tokens[2]))) {
+    lineasTexto.push(generarMensajeErrorSintaxis(tokens[2], sintaxisValida[2]));
+
+    return lineasTexto;
   }
 
-  if (!esLiteral(tokens[2]) && !esNumero(tokens[2]) && !esId(tokens[2])) {
-    return `${texto}Error de sintaxis: se esperaba un literal, un número o un identificador\n`;
+  if (obtenerTipoSimbolo(tokens[2]) === ")") {
+    lineasTexto.push(`${tokens[2]}: paréntesis de cierre de la instrucción`);
+
+    return lineasTexto;
   }
 
-  texto += `${tokens[2]}: primer argumento de la instrucción (${tipoSimbolo(tokens[2])}). `;
-  texto += "Mensaje que se imprimirá al usuario.\n";
+  lineasTexto.push(`${tokens[2]}: primer argumento de la instrucción (${obtenerTipoSimbolo(tokens[2])}). Mensaje que se imprimirá al usuario.`);
 
   // Token 3
-  if (tokens[3] !== ")") {
-    return `${texto}Error de sintaxis: se esperaba ')'\n`;
+  if (!sintaxisValida[3].includes(obtenerTipoSimbolo(tokens[3]))) {
+    lineasTexto.push(generarMensajeErrorSintaxis(tokens[3], sintaxisValida[3]));
+
+    return lineasTexto;
   }
 
-  texto += `${tokens[3]}: paréntesis de cierre de la instrucción\n`;
+  lineasTexto.push(`${tokens[3]}: paréntesis de cierre de la instrucción`);
 
-  return texto;
+  return lineasTexto;
 }
