@@ -30,7 +30,7 @@ export const instruccion02 = (tokens) => {
     return lineasTexto;
   }
 
-  lineasTexto.push(`${tokens[2]}: argumento de la instrucción (${obtenerTipoSimbolo(tokens[2])}). Mensaje que se mostrará al usuario.`);
+  lineasTexto.push(`${tokens[2]}: primer argumento de la instrucción (${obtenerTipoSimbolo(tokens[2])}). Mensaje que se mostrará al usuario.`);
 
   // Token 3
   if (!sintaxisValida[3].includes(obtenerTipoSimbolo(tokens[3]))) {
