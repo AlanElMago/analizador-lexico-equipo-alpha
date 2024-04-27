@@ -77,7 +77,7 @@ export const analizar = (texto) => {
     case "conjunto":
       // return instruccion20(tokens);
     default:
-      return `Símbolo no reconocido: ${nombre_instruccion}`;
+      return [`Error de sintaxis: Símbolo no reconocido: ${nombre_instruccion}`];
   }
 }
 
