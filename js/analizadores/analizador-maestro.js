@@ -12,7 +12,7 @@ import { instruccion06 } from './instruccion-06.js';
 // import { instruccion09 } from './instruccion-09.js';
 // import { instruccion10 } from './instruccion-10.js';
 // import { instruccion11 } from './instruccion-11.js';
-// import { instruccion12 } from './instruccion-12.js';
+import { instruccion12 } from './instruccion-12.js';
 // import { instruccion13 } from './instruccion-13.js';
 // import { instruccion14 } from './instruccion-14.js';
 // import { instruccion15 } from './instruccion-15.js';
@@ -59,7 +59,7 @@ export const analizar = (texto) => {
     case "cremallera":
       // return instruccion11(tokens);
     case "flotante":
-      // return instruccion12(tokens);
+      return instruccion12(tokens);
     case "entero":
       // return instruccion13(tokens);
     case "rebanada":
