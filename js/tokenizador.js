@@ -1,40 +1,50 @@
-import { Regexs } from './expresiones-regulares.js';
+import { Lexema } from './lexema.js';
+import { Token } from './token.js';
 
 export const tokenizar = (texto) => {
-  const extraerSubcadenaConUnRegex = (cadena, regex) => { 
-    let match = cadena.match(regex);
-    return match ? match[0] : null;
-  }
+  const extraerToken = (cadena, regexs, columna) => { 
+    for (const regex in regexs) {
+      let match = cadena.match(regexs[regex]);
 
-  let tokens = [];
-  let i = 0;
+      if (match) {
+        let valor = match[0];
+        let token = new Token(Lexema.obtenerTipo(valor), valor, columna);
 
-  while (i < texto.length) {
-    if (/\s/.test(texto[i])) {
-      i++;
-      continue;
-    }
-
-    let token = null;
-
-    for (const llave in Regexs) {
-      token = extraerSubcadenaConUnRegex(texto.substring(i), Regexs[llave]);
-
-      if (token) {
-        tokens.push(token);
-        i += token.length;
-
-        break;
+        return token;
       }
     }
 
-    if (token) {
+    return new Token(Lexema.Tipo.Ilegal, cadena[0], columna);
+  }
+
+  let tokens = [];
+  let columna = 0;
+
+  while (columna < texto.length) {
+    if (/\s/.test(texto[columna])) {
+      columna++;
+
       continue;
     }
 
-    tokens.push(texto[i]);
-    i++;
+    let token = extraerToken(texto.substring(columna), Lexema.Regex, columna);
+
+    tokens.push(token);
+
+    if (token.tipo === Lexema.Tipo.Comentario) {
+      tokens.pop();
+
+      break;
+    }
+
+    if (token.tipo === Lexema.Tipo.Ilegal) {      
+      break;
+    }
+
+    columna += token.longitud;
   }
+
+  console.log(tokens);
 
   return tokens;
 }

@@ -21,7 +21,7 @@
 
   button.addEventListener('click', () => {
     const tokens = tokenizar(entrada.value);
-    salida.value = tokens.join('\n');
+    salida.value = JSON.stringify(tokens, null, 2);
   });
 </script>
 </html>

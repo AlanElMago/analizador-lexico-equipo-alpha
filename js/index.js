@@ -1,4 +1,4 @@
-import { analizar } from './analizadores/analizador-maestro.js';
+import { analizar } from './analizador-lexico.js';
 
 const btnAnalizar = document.getElementById('btn-analizar');
 const entrada = document.getElementById('entrada');
