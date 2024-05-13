@@ -17,10 +17,10 @@ import { instruccion06 } from './instruccion-06.js';
 // import { instruccion14 } from './instruccion-14.js';
 // import { instruccion15 } from './instruccion-15.js';
 // import { instruccion16 } from './instruccion-16.js';
-// import { instruccion17 } from './instruccion-17.js';
-// import { instruccion18 } from './instruccion-18.js';
-// import { instruccion19 } from './instruccion-19.js';
-// import { instruccion20 } from './instruccion-20.js';
+import { instruccion17 } from './instruccion-17.js';
+import { instruccion18 } from './instruccion-18.js';
+import { instruccion19 } from './instruccion-19.js';
+import { instruccion20 } from './instruccion-20.js';
 
 export const analizar = (texto) => {
   const tokens = tokenizar(texto);
@@ -69,13 +69,13 @@ export const analizar = (texto) => {
     case "tupla":
       // return instruccion16(tokens);
     case "tipo":
-      // return instruccion17(tokens);
+      return instruccion17(tokens);
     case "ordenado":
-      // return instruccion18(tokens);
+      return instruccion18(tokens);
     case "potencia":
-      // return instruccion19(tokens);
+      return instruccion19(tokens);
     case "conjunto":
-      // return instruccion20(tokens);
+      return instruccion20(tokens);
     default:
       return [`Error de sintaxis: Símbolo no reconocido: ${nombre_instruccion}`];
   }
