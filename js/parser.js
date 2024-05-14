@@ -22,7 +22,7 @@ export class Parser {
    * <Sentencia> -> <Asignacion> | <Expresion> | <SentenciaSi> | <SentenciaOsi> | <SentenciaSino> | <SentenciaPara> | <SentenciaMientras>
    */
   parsearSentencia = (tokenActual) => {
-    if (tokenActual.tipo === Lexema.Tipo.Id && this.scanner.obtenerToken(0).valor === "=") {
+    if (tokenActual.tipo === Lexema.Tipo.Id && this.scanner.haySiguienteToken() && this.scanner.obtenerToken(0).valor === "=") {
       tokenActual = this.parsearAsignacion(tokenActual);
     } else if (tokenActual.valor === "si") {
       tokenActual = this.parsearSentenciaSi(tokenActual);
@@ -169,7 +169,7 @@ export class Parser {
    * Gramática:
    * <LlamadaFuncion> -> <IdFuncion> "(" <ListaArgumentos> ")" | <IdFuncion> "(" ")"
    * 
-   * Nota: También se encarga de verificar la cantidad de argumentos de las funciones
+   * Nota: También se encarga de verificar la cantidad de argumentos de las funciones y de proporcionar información sobre las funciones y sus argumentos.
    */
   parsearLlamadaFuncion = (tokenActual) => {
       const nombreFuncion = tokenActual.valor;
@@ -196,10 +196,10 @@ export class Parser {
         tokenActual = this.consumirToken(tokenActual); // ")"
 
         // Mostrar información de la función
-        this.lineas.push("");
+        this.lineas.push("--------------------Información de la Función--------------------");
         this.lineas.push(`Función (${nombreFuncion}): ${InfoFunciones.DescFunciones[nombreFuncion]}`);
         this.lineas.push("Sin argumentos.");
-        this.lineas.push("");
+        this.lineas.push("-----------------------------------------------------------------");
 
         return tokenActual;
       }
@@ -215,12 +215,12 @@ export class Parser {
       tokenActual = this.consumirToken(tokenActual); // ")"
 
       // Mostrar información de la función
-      this.lineas.push("");
+      this.lineas.push("--------------------Información de la Función--------------------");
       this.lineas.push(`Función (${nombreFuncion}): ${InfoFunciones.DescFunciones[nombreFuncion]}`);
       InfoFunciones.DescArgumentos[nombreFuncion][this.contadorArgumentos].forEach(linea => {
         this.lineas.push(linea); 
       });
-      this.lineas.push("");
+      this.lineas.push("-----------------------------------------------------------------");
 
       this.contadorArgumentos = 0; // reiniciar contador de argumentos
 
