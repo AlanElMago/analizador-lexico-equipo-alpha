@@ -1,4 +1,5 @@
-import { analizar } from './analizador-lexico.js';
+import { Scanner } from './scanner.js';
+import { Parser } from './parser.js';
 
 const btnAnalizar = document.getElementById('btn-analizar');
 const entrada = document.getElementById('entrada');
@@ -10,7 +11,9 @@ const btnSalir = document.getElementById('btn-salir');
 btnAnalizar.addEventListener('click', (event) => {
     event.preventDefault();
     const texto = entrada.value;
-    const textoSalida = analizar(texto);
+    const scanner = new Scanner(texto);
+    const parser = new Parser(scanner);
+    const textoSalida = parser.parsear();
     salida.value = textoSalida.join('\n');
 });
 

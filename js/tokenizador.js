@@ -44,7 +44,8 @@ export const tokenizar = (texto) => {
     columna += token.longitud;
   }
 
-  console.log(tokens);
+  let tokensClon = [...tokens];
+  console.log(tokensClon);
 
   return tokens;
 }
