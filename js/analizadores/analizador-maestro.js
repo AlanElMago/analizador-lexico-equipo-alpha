@@ -7,11 +7,11 @@ import { instruccion03 } from './instruccion-03.js';
 import { instruccion04 } from './instruccion-04.js';
 import { instruccion05 } from './instruccion-05.js';
 import { instruccion06 } from './instruccion-06.js';
-// import { instruccion07 } from './instruccion-07.js';
-// import { instruccion08 } from './instruccion-08.js';
-// import { instruccion09 } from './instruccion-09.js';
-// import { instruccion10 } from './instruccion-10.js';
-// import { instruccion11 } from './instruccion-11.js';
+import { instruccion07 } from './instruccion-07.js';
+import { instruccion08 } from './instruccion-08.js';
+import { instruccion09 } from './instruccion-09.js';
+import { instruccion10 } from './instruccion-10.js';
+import { instruccion11 } from './instruccion-11.js';
 // import { instruccion12 } from './instruccion-12.js';
 // import { instruccion13 } from './instruccion-13.js';
 // import { instruccion14 } from './instruccion-14.js';
@@ -49,15 +49,15 @@ export const analizar = (texto) => {
     case "suma":
       return instruccion06(tokens);
     case "longitud":
-      // return instruccion07(tokens);
+      return instruccion07(tokens);
     case "lista":
-      // return instruccion08(tokens);
+      return instruccion08(tokens);
     case "cadena":
-      // return instruccion09(tokens);
+      return instruccion09(tokens);
     case "rango":
-      // return instruccion10(tokens);
+      return instruccion10(tokens);
     case "cremallera":
-      // return instruccion11(tokens);
+      return instruccion11(tokens);
     case "flotante":
       // return instruccion12(tokens);
     case "entero":
