@@ -6,7 +6,8 @@ export class Parser {
   constructor(scanner) {
     this.scanner = scanner;
     this.lineas = [];
-    this.contadorArgumentos = 0;
+    this.contadorFunciones = 0;
+    this.contadorArgumentos = {};
   };
 
   parsear = () => {
@@ -173,10 +174,15 @@ export class Parser {
    */
   parsearLlamadaFuncion = (tokenActual) => {
       const nombreFuncion = tokenActual.valor;
+      const numFuncion = this.contadorFunciones + 1;
       const minArgumentos = InfoFunciones.NumAgrumentosLimites[nombreFuncion].min;
       const maxArgumentos = InfoFunciones.NumAgrumentosLimites[nombreFuncion].max;
 
+      this.contadorFunciones++;
+      this.contadorArgumentos[numFuncion] = 0;
+
       tokenActual = this.consumirToken(tokenActual); // <IdFuncion>
+      this.lineas[this.lineas.length - 1] += ` ### Función (${String.fromCharCode(96 + numFuncion)}) ###`;
 
       if (tokenActual.tipo !== Lexema.Tipo.ParentesisApertura) {
         this.generarMensajeError(`ErrorSintaxis: Se esperaba un paréntesis de apertura (columna ${tokenActual.columna})`, tokenActual);
@@ -196,15 +202,17 @@ export class Parser {
         tokenActual = this.consumirToken(tokenActual); // ")"
 
         // Mostrar información de la función
-        this.lineas.push("--------------------Información de la Función--------------------");
+        this.lineas.push("")
+        this.lineas.push(`----------------Información de la Función (${String.fromCharCode(96 + numFuncion)})--------------------`);
         this.lineas.push(`Función (${nombreFuncion}): ${InfoFunciones.DescFunciones[nombreFuncion]}`);
         this.lineas.push("Sin argumentos.");
         this.lineas.push("-----------------------------------------------------------------");
+        this.lineas.push("")
 
         return tokenActual;
       }
 
-      tokenActual = this.parsearListaArgumentos(tokenActual, minArgumentos, maxArgumentos); // <ListaArgumentos>
+      tokenActual = this.parsearListaArgumentos(tokenActual, minArgumentos, maxArgumentos, numFuncion); // <ListaArgumentos>
 
       if (tokenActual.tipo !== Lexema.Tipo.ParentesisCierre) {
         this.generarMensajeError(`ErrorSintaxis: Se esperaba un paréntesis de cierre o una coma. Se encontró '${tokenActual.valor}' (columna ${tokenActual.columna})`, tokenActual);
@@ -215,14 +223,16 @@ export class Parser {
       tokenActual = this.consumirToken(tokenActual); // ")"
 
       // Mostrar información de la función
-      this.lineas.push("--------------------Información de la Función--------------------");
+      this.lineas.push("")
+      this.lineas.push(`----------------Información de la Función (${String.fromCharCode(96 + numFuncion)})--------------------`);
       this.lineas.push(`Función (${nombreFuncion}): ${InfoFunciones.DescFunciones[nombreFuncion]}`);
-      InfoFunciones.DescArgumentos[nombreFuncion][this.contadorArgumentos].forEach(linea => {
+      InfoFunciones.DescArgumentos[nombreFuncion][this.contadorArgumentos[numFuncion]].forEach(linea => {
         this.lineas.push(linea); 
       });
       this.lineas.push("-----------------------------------------------------------------");
+      this.lineas.push("")
 
-      this.contadorArgumentos = 0; // reiniciar contador de argumentos
+      // this.contadorArgumentos[numFuncion] = 0; // reiniciar contador de argumentos
 
       return tokenActual;
   };
@@ -231,25 +241,25 @@ export class Parser {
    * Gramática:
    * <ListaArgumentos> -> <Expresion> | <Expresion> "," <ListaArgumentos>
    */
-  parsearListaArgumentos = (tokenActual, minArgumentos, maxArgumentos) => {
-    this.contadorArgumentos++;
-    this.lineas.push(`    ### Argumento ${this.contadorArgumentos} ###`);
+  parsearListaArgumentos = (tokenActual, minArgumentos, maxArgumentos, numFuncion) => {
+    this.contadorArgumentos[numFuncion]++;
+    this.lineas.push(`    ### Argumento ${String.fromCharCode(96 + numFuncion)}${this.contadorArgumentos[numFuncion]} ###`);
 
     tokenActual = this.parsearExpresion(tokenActual); // <Expresion>
 
     if (tokenActual.valor === ",") {
       tokenActual = this.consumirToken(tokenActual); // ","
 
-      return this.parsearListaArgumentos(tokenActual, minArgumentos, maxArgumentos); // <ListaArgumentos>
+      return this.parsearListaArgumentos(tokenActual, minArgumentos, maxArgumentos, numFuncion); // <ListaArgumentos>
     }
 
-    if (this.contadorArgumentos > maxArgumentos) {
+    if (this.contadorArgumentos[numFuncion] > maxArgumentos) {
       this.generarMensajeError(`ErrorSintaxis: Se superó la cantidad máxima de argumentos de la función (columna ${tokenActual.columna})`, tokenActual);
 
       return new Token(Lexema.Tipo.Error, "Error", tokenActual.columna);
     }
 
-    if (this.contadorArgumentos < minArgumentos) {
+    if (this.contadorArgumentos[numFuncion] < minArgumentos) {
       this.generarMensajeError(`ErrorSintaxis: Se esperaba al menos ${minArgumentos} argumento(s) (columna ${tokenActual.columna})`, tokenActual);
 
       return new Token(Lexema.Tipo.Error, "Error", tokenActual.columna);
