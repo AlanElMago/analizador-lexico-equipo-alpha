@@ -207,6 +207,14 @@ export class Parser {
       }
 
       tokenActual = this.consumirToken(tokenActual); // ")"
+
+      this.lineas.push("");
+      this.lineas.push(`Función (${nombreFuncion}): ${InfoFunciones.DescFunciones[nombreFuncion]}`);
+      InfoFunciones.DescArgumentos[nombreFuncion][this.contadorArgumentos].forEach(linea => {
+        this.lineas.push(linea); 
+      });
+      this.lineas.push("");
+
       this.contadorArgumentos = 0; // reiniciar contador de argumentos
 
       return tokenActual;
@@ -218,7 +226,7 @@ export class Parser {
    */
   parsearListaArgumentos = (tokenActual, minAgrumentos, maxArgumentos) => {
     this.contadorArgumentos++;
-    this.lineas.push(`    # Argumento ${this.contadorArgumentos} #`);
+    this.lineas.push(`    ### Argumento ${this.contadorArgumentos} ###`);
     tokenActual = this.parsearExpresion(tokenActual); // <Expresion>
 
     if (tokenActual.valor === ",") {
