@@ -1,9 +1,13 @@
-<!DOCTYPE html> <html lang="en"> <head>
+<!DOCTYPE html>
+<html lang="en">
+  
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tokenizador</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body>
   <p>Entrada:</p>
   <input id="entrada" size="80" />
@@ -11,7 +15,7 @@
   <textarea id="salida" cols="80" rows="20" readonly></textarea>
   <button id="btn-tokenizar">Tokenizar</button>
 </body>
-<!-- Scripts -->
+
 <script type="module">
   import { tokenizar } from '../js/tokenizador.js';
 
@@ -21,7 +25,8 @@
 
   button.addEventListener('click', () => {
     const tokens = tokenizar(entrada.value);
-    salida.value = tokens.join('\n');
+    salida.value = JSON.stringify(tokens, null, 2);
   });
 </script>
+
 </html>
