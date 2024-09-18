@@ -44,8 +44,7 @@ export const tokenizar = (texto) => {
     columna += token.longitud;
   }
 
-  let tokensClon = [...tokens];
-  console.log(tokensClon);
+  tokens.push(new Token(Lexema.Tipo.FinDeArchivo, "EOF", texto.length, 1));
 
   return tokens;
 }
