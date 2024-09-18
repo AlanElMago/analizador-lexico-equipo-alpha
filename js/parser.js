@@ -14,6 +14,10 @@ export class Parser {
   parsear = () => {
     this.consumirToken();
 
+    if (this.scanner.haySiguienteToken() && this.scanner.obtenerToken(0).valor === "=") {
+      return parsearAsignacion(this);
+    }
+
     return parsearExpresion(this);
   };
 
@@ -27,6 +31,31 @@ export class Parser {
 
   hayErrores = () => this.errores.length > 0;
 };
+
+/*
+ * Gramática:
+ * <Asignación> -> <Id> "=" <Expresion>
+ */
+const parsearAsignacion = (parser) => {
+  if (parser.tokenActual.tipo !== Lexema.Tipo.Id) {
+    parser.errores.push(MensajeErrorSintaxis.asignacionNoVariable(parser.tokenActual));
+    return new ArbolSintactico(parser.tokenActual);
+  }
+
+  const arbol = new ArbolSintactico();
+  arbol.hijos[0] = new ArbolSintactico(parser.tokenActual);
+
+  parser.consumirToken(); // <Id>
+
+  // Ya se comprobó que este token es el símbolo de asignación "="
+  arbol.token = parser.tokenActual;
+
+  parser.consumirToken(); // "="
+
+  arbol.hijos[1] = parsearExpresion(parser); // <Expresion>
+
+  return arbol;
+}
 
 /*
  * Gramática:
