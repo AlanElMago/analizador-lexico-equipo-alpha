@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notación Polaca</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+  <p>Entrada:</p>
+  <input id="entrada" size="80" />
+  <p>Salida:</p>
+  <textarea id="salida" cols="80" rows="20" readonly></textarea>
+  <button id="btn-generar">Generar</button>
+</body>
+
+<script type="module">
+  import { Scanner } from '../js/scanner.js';
+  import { Parser } from '../js/parser.js';
+  import { generarNotacionPolaca, generarNotacionPolacaInversa } from '../js/arbol_sintactico.js'
+
+  const button = document.querySelector('#btn-generar');
+  const entrada = document.querySelector('#entrada');
+  const salida = document.querySelector('#salida');
+
+  button.addEventListener('click', () => {
+    const scanner = new Scanner(entrada.value);
+    const parser = new Parser(scanner);
+    const arbol = parser.parsear();
+
+    if (parser.hayErrores()) {
+      salida.value = parser.errores.join("\n");
+
+      return;
+    }
+
+    salida.value  = "Notación Polaca:\n";
+    salida.value += generarNotacionPolaca(arbol);
+    salida.value += "\n";
+    salida.value += "Notación Polaca Inversa:\n";
+    salida.value += generarNotacionPolacaInversa(arbol);
+  });
+</script>
+
+</html>
