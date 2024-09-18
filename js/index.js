@@ -1,5 +1,5 @@
 import { Scanner } from './scanner.js';
-import { Parser } from './parser.js';
+import { Parser } from './parser_deprecado.js';
 
 const btnAnalizar = document.getElementById('btn-analizar');
 const entrada = document.getElementById('entrada');
