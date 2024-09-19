@@ -64,27 +64,37 @@ const parsearAsignacion = (parser) => {
 const parsearExpresion = (parser) => {
   const termino = parsearTermino(parser); // <Termino>
 
-  if (parser.tokenActual.valor === "+" || parser.tokenActual.valor === "-") {
-    const arbolA = new ArbolSintactico(parser.tokenActual);
-    arbolA.hijos[0] = termino;
+  if (parser.tokenActual.valor !== "+" && parser.tokenActual.valor !== "-") {
+    return termino;
+  }
 
-    parser.consumirToken(); // "+" | "-"
+  const arbolA = new ArbolSintactico(parser.tokenActual);
+  arbolA.hijos[0] = termino;
 
-    const arbolB = parsearExpresion(parser); // <Expresion>
+  parser.consumirToken(); // "+" | "-"
 
-    if (arbolB.token.valor === "+" || arbolB.token.valor === "-") {
-      arbolA.hijos[1] = arbolB.hijos[0];
-      arbolB.hijos[0] = arbolA;
+  const arbolB = parsearExpresion(parser); // <Expresion>
 
-      return arbolB;
-    }
-
+  // Checamos si el arbolB tiene o no la misma presedencia que el arbol A
+  if (arbolB.token.valor !== "+" && arbolB.token.valor !== "-") {
     arbolA.hijos[1] = arbolB;
 
     return arbolA;
   }
 
-  return termino;
+  // El arbolB tiene la misma presedencia que el arbol A. Por lo tanto, el arbolA se coloca más abajo que el arbolB.
+  let arbolTemp = arbolB;
+
+  while (arbolTemp.hijos[0] != null
+      && ( arbolTemp.hijos[0].token.valor === "+"
+        || arbolTemp.hijos[0].token.valor === "/" )) {
+    arbolTemp = arbolTemp.hijos[0];
+  }
+
+  arbolA.hijos[1] = arbolTemp.hijos[0];
+  arbolTemp.hijos[0] = arbolA;
+
+  return arbolB;
 }
 
 /*
@@ -94,31 +104,41 @@ const parsearExpresion = (parser) => {
 const parsearTermino = (parser) => {
   const factor = parsearFactor(parser); // <Factor>
 
-  if (parser.tokenActual.valor === "*" || parser.tokenActual.valor === "/" || parser.tokenActual.valor === "%") {
-    const arbolA = new ArbolSintactico(parser.tokenActual);
-    arbolA.hijos[0] = factor;
+  if (parser.tokenActual.valor !== "*" && parser.tokenActual.valor !== "/" && parser.tokenActual.valor !== "%") {
+    return factor;
+  }
 
-    parser.consumirToken(); // "*" | "/" | "%"
+  const arbolA = new ArbolSintactico(parser.tokenActual);
+  arbolA.hijos[0] = factor;
 
-    const arbolB = parsearExpresion(parser); // <Expresion>
+  parser.consumirToken(); // "*" | "/" | "%"
 
-    if (arbolB.token.valor === "*" || arbolB.token.valor === "/" || arbolB.token.valor === "%") {
-      arbolA.hijos[1] = arbolB.hijos[0];
-      arbolB.hijos[0] = arbolA;
+  const arbolB = parsearExpresion(parser); // <Expresion>
 
-      return arbolB;
-    }
-
+  // Checamos si el arbolB tiene o no la misma presedencia que el arbol A
+  if (arbolB.token.valor !== "*" && arbolB.token.valor !== "/" && arbolB.token.valor !== "%") {
     arbolA.hijos[1] = arbolB;
 
     return arbolA;
   }
 
-  return factor;
+  // El arbolB tiene la misma presedencia que el arbol A. Por lo tanto, el ayyrbolA se coloca más abajo que el arbolB.
+  let arbolTemp = arbolB;
+
+  while (arbolTemp.hijos[0] != null
+      && ( arbolTemp.hijos[0].token.valor === "*"
+        || arbolTemp.hijos[0].token.valor === "/"
+        || arbolTemp.hijos[0].token.valor === "%" )) {
+    arbolTemp = arbolTemp.hijos[0];
+  }
+
+  arbolA.hijos[1] = arbolTemp.hijos[0];
+  arbolTemp.hijos[0] = arbolA;
+
+  return arbolB;
 }
 
 /*
- * Gramática:
  * <Factor> -> <Id> | <Literal> | "(" <Expresion> ")"
  * <Literal> -> <LiteralEntero> | <LiteralFlotante>
  */
