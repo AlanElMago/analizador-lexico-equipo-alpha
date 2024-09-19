@@ -75,14 +75,14 @@ const parsearExpresion = (parser) => {
 
   const arbolB = parsearExpresion(parser); // <Expresion>
 
-  // Checamos si el arbolB tiene o no la misma presedencia que el arbol A
+  // Checamos si el arbolB tiene o no la misma precedencia que el arbol A
   if (arbolB.token.valor !== "+" && arbolB.token.valor !== "-") {
     arbolA.hijos[1] = arbolB;
 
     return arbolA;
   }
 
-  // El arbolB tiene la misma presedencia que el arbol A. Por lo tanto, el arbolA se coloca más abajo que el arbolB.
+  // El arbolB tiene la misma precedencia que el arbol A. Por lo tanto, el arbolA se coloca más abajo que el arbolB.
   let arbolTemp = arbolB;
 
   while (arbolTemp.hijos[0] != null
@@ -115,14 +115,14 @@ const parsearTermino = (parser) => {
 
   const arbolB = parsearExpresion(parser); // <Expresion>
 
-  // Checamos si el arbolB tiene o no la misma presedencia que el arbol A
+  // Checamos si el arbolB tiene o no la misma precedencia que el arbol A
   if (arbolB.token.valor !== "*" && arbolB.token.valor !== "/" && arbolB.token.valor !== "%") {
     arbolA.hijos[1] = arbolB;
 
     return arbolA;
   }
 
-  // El arbolB tiene la misma presedencia que el arbol A. Por lo tanto, el ayyrbolA se coloca más abajo que el arbolB.
+  // El arbolB tiene la misma precedencia que el arbol A. Por lo tanto, el ayyrbolA se coloca más abajo que el arbolB.
   let arbolTemp = arbolB;
 
   while (arbolTemp.hijos[0] != null
