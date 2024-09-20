@@ -37,8 +37,14 @@ export const generarArbolSintactico = (arbol) => {
     .attr("class", "node")
     .attr("transform", d => `translate(${d.x}, ${d.y})`);  // Intercambia x e y
 
-  node.append("circle")
-    .attr("r", 10)
+  node.append("rect")
+    .attr("width", d => {
+      const textLength = d.data.name.length;
+      return textLength * 8 + 20; // Ajusta el ancho del rectángulo basado en la longitud del texto
+    })
+    .attr("height", 30)
+    .attr("x", d => -(d.data.name.length * 8 + 20) / 2)  // Centra el rectángulo horizontalmente
+    .attr("y", -15) // Centra el rectángulo verticalmente
     .attr("fill", "#fff")
     .attr("stroke", "steelblue")
     .attr("stroke-width", 2);
