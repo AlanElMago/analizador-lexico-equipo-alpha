@@ -35,22 +35,45 @@ export class Parser {
   hayErrores = () => this.errores.length > 0;
 };
 
+// La precedencia se maneja de manera invertida. Es decir, entre menor el nivel de precedencia de un operador, mayor
+// será su prioridad.
+//
+// Por ejemplo: la multipicación se hace antes que la suma por que el nivel de precedencia de la multipicación es 0 y
+// el nivel de precedencia de la suma es 1.
 const tablaPrecedencia = [
+  // Nivel de precedencia: 0
   // Multiplicación, División, Módulo
   [ new Token(Lexema.Tipo.Aritmetico, "*"),
     new Token(Lexema.Tipo.Aritmetico, "/"),
     new Token(Lexema.Tipo.Aritmetico, "%") ],
 
+  // Nivel de precedencia: 1
   // Suma, Resta
   [ new Token(Lexema.Tipo.Aritmetico, "+"),
     new Token(Lexema.Tipo.Aritmetico, "-") ],
+
+  // Nivel de precedencia: 2
+  // Menor que, Menor o igual que
+  // Mayor que, Mayor o igual que
+  [ new Token(Lexema.Tipo.Comparacion,  "<"),
+    new Token(Lexema.Tipo.Comparacion, "<="),
+    new Token(Lexema.Tipo.Comparacion,  ">"),
+    new Token(Lexema.Tipo.Comparacion, ">=") ],
   
+  // Nivel de precedencia: 3
+  // Igual a, No igual a
+  [ new Token(Lexema.Tipo.Comparacion, "=="),
+    new Token(Lexema.Tipo.Comparacion, "!=") ],
+  
+  // Nivel de precedencia: 4
   // And Lógico
   [ new Token(Lexema.Tipo.Logico, "Y") ],
 
+  // Nivel de precedencia: 5
   // Or Lógico
   [ new Token(Lexema.Tipo.Logico, "O") ],
 
+  // Nivel de precedencia: 6
   // Asignación
   [ new Token(Lexema.Tipo.Asignacion, "=") ],
 ]
@@ -118,7 +141,8 @@ const construirArregloRpn = (parser) => {
     // - an operator o1:
     else if ( parser.tokenActual.tipo === Lexema.Tipo.Aritmetico
            || parser.tokenActual.tipo === Lexema.Tipo.Asignacion
-           || parser.tokenActual.tipo === Lexema.Tipo.Logico )
+           || parser.tokenActual.tipo === Lexema.Tipo.Logico
+           || parser.tokenActual.tipo === Lexema.Tipo.Comparacion )
     {
       // while (
       //   the operator stack is not empty,
