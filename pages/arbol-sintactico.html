@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Árbol Sintáctico</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+  <p>Entrada:</p>
+  <input id="entrada" size="80" />
+  <button id="btn-generar">Generar</button>
+  
+  <!-- Contenedor para el SVG del árbol -->
+  <div id="tree-container"></div>
+
+</body>
+
+<script type="module">
+  import { Scanner } from '../js/scanner.js';
+  import { Parser } from '../js/parser.js';
+  import { generarNotacionPolaca, generarNotacionPolacaInversa } from '../js/arbol_sintactico.js';
+  import { generarArbolSintactico } from '../js/arbol_d3.js';
+
+  const button = document.querySelector('#btn-generar');
+  const entrada = document.querySelector('#entrada');
+
+  button.addEventListener('click', () => {
+    const scanner = new Scanner(entrada.value);
+    const parser = new Parser(scanner);
+    const arbol = parser.parsear();
+
+    if (parser.hayErrores()) {      
+      alert("Error al generar el árbol sintáctico");
+      return;
+    }
+
+    generarArbolSintactico(arbol);
+  });
+</script>
+
+</html>
