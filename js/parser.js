@@ -44,6 +44,12 @@ const tablaPrecedencia = [
   // Suma, Resta
   [ new Token(Lexema.Tipo.Aritmetico, "+"),
     new Token(Lexema.Tipo.Aritmetico, "-") ],
+  
+  // And Lógico
+  [ new Token(Lexema.Tipo.Logico, "Y") ],
+
+  // Or Lógico
+  [ new Token(Lexema.Tipo.Logico, "O") ],
 
   // Asignación
   [ new Token(Lexema.Tipo.Asignacion, "=") ],
@@ -111,7 +117,8 @@ const construirArregloRpn = (parser) => {
 
     // - an operator o1:
     else if ( parser.tokenActual.tipo === Lexema.Tipo.Aritmetico
-           || parser.tokenActual.tipo === Lexema.Tipo.Asignacion )
+           || parser.tokenActual.tipo === Lexema.Tipo.Asignacion
+           || parser.tokenActual.tipo === Lexema.Tipo.Logico )
     {
       // while (
       //   the operator stack is not empty,
@@ -133,6 +140,7 @@ const construirArregloRpn = (parser) => {
     // - a left parenthisis:
     else if ( parser.tokenActual.tipo === Lexema.Tipo.ParentesisApertura )
     {
+      // push it onto the operator stack
       pilaOperadores.push(parser.tokenActual);
     }
 
