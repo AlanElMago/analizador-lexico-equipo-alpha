@@ -37,7 +37,7 @@ export const Lexema = {
     Comentario: /^(#.*|("""[\s\S]*?""")|('''[\s\S]*?'''))/,
     Cadena: /^(['"][^'"]*['"])/,
     Comparacion: /^(==|!=|>=|<=|>|<)/,
-    Aritmetico: /^(\+|-|\*|\/|%)/,
+    Aritmetico: /^(\*\*|\+|-|\*|\/|%)/,
     Asignacion: /^=/,
     Delimitador: /^(:|;|\.|,)/,
     ParentesisApertura: /^\(/,

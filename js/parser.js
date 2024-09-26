@@ -42,17 +42,21 @@ export class Parser {
 // el nivel de precedencia de la suma es 1.
 const tablaPrecedencia = [
   // Nivel de precedencia: 0
+  // Exponenciación
+  [ new Token(Lexema.Tipo.Aritmetico, "**") ],
+
+  // Nivel de precedencia: 1
   // Multiplicación, División, Módulo
   [ new Token(Lexema.Tipo.Aritmetico, "*"),
     new Token(Lexema.Tipo.Aritmetico, "/"),
     new Token(Lexema.Tipo.Aritmetico, "%") ],
 
-  // Nivel de precedencia: 1
+  // Nivel de precedencia: 2
   // Suma, Resta
   [ new Token(Lexema.Tipo.Aritmetico, "+"),
     new Token(Lexema.Tipo.Aritmetico, "-") ],
 
-  // Nivel de precedencia: 2
+  // Nivel de precedencia: 3
   // Menor que, Menor o igual que
   // Mayor que, Mayor o igual que
   [ new Token(Lexema.Tipo.Comparacion,  "<"),
@@ -60,20 +64,20 @@ const tablaPrecedencia = [
     new Token(Lexema.Tipo.Comparacion,  ">"),
     new Token(Lexema.Tipo.Comparacion, ">=") ],
   
-  // Nivel de precedencia: 3
+  // Nivel de precedencia: 4
   // Igual a, No igual a
   [ new Token(Lexema.Tipo.Comparacion, "=="),
     new Token(Lexema.Tipo.Comparacion, "!=") ],
   
-  // Nivel de precedencia: 4
+  // Nivel de precedencia: 5
   // And Lógico
   [ new Token(Lexema.Tipo.Logico, "Y") ],
 
-  // Nivel de precedencia: 5
+  // Nivel de precedencia: 6
   // Or Lógico
   [ new Token(Lexema.Tipo.Logico, "O") ],
 
-  // Nivel de precedencia: 6
+  // Nivel de precedencia: 7
   // Asignación
   [ new Token(Lexema.Tipo.Asignacion, "=") ],
 ]
@@ -147,11 +151,15 @@ const construirArregloRpn = (parser) => {
       // while (
       //   the operator stack is not empty,
       //   and there is an operator o2 at the top of the operator stack which is not a left parenthesis,
-      //   and o2 has less than or equal precedence to o1
+      //   and ( o2 has less precedence than o1
+      //     or ( o1 and o2 have equal precedence
+      //      and ( o1 is left-associative )))
       // ):
       while (!pilaOperadores.estaVacia()
         && pilaOperadores.mirarTope().token.tipo !== Lexema.Tipo.ParentesisApertura
-        && pilaOperadores.mirarTope().nivelPrecedencia <= obtenerNivelPrecedenciaToken(parser.tokenActual))
+        && ( pilaOperadores.mirarTope().nivelPrecedencia < obtenerNivelPrecedenciaToken(parser.tokenActual)
+          || ( pilaOperadores.mirarTope().nivelPrecedencia === obtenerNivelPrecedenciaToken(parser.tokenActual)
+            && ( parser.tokenActual.valor !== "**" && parser.tokenActual.valor !== "=" ))))
       {
         // pop o2 from the operator stack into the output queue
         arreglo.push(pilaOperadores.pop().token)
