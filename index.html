@@ -23,13 +23,16 @@
     <p>Introduzca la instrucción que desea analizar:</p>
     <input class="entrada" id="entrada"type="text"/>
     <div class="container_btn">
-      <button class="btn verde" id="btn-analizar">Analizar</button>
-      <button class="btn azul" id="btn-limpiar">Limpiar</button>
-      <button class="btn azul" id="btn-equipo">Equipo</button>
-      <button class="btn rojo" id="btn-salir">Salir</button>
+      <button class="btn verde" id="btn-analizar">Analizador Léxico</button>
+      <button class="btn verde" id="btn-sintax">Analizador Sintáctico</button>
+      <button class="btn verde" id="btn-lexsintax">Analizador Lex-Sintax</button>
     </div>
     <p>Análisis:</p>
     <textarea class="output" id="salida" cols="65" rows="20" readonly></textarea>
+    <div id="tree-container"></div>
+    <button class="btn azul" id="btn-limpiar">Limpiar</button>
+    <button class="btn azul" id="btn-equipo">Equipo</button>
+    <button class="btn rojo" id="btn-salir">Salir</button>
   </form>
 
   <div id="Modal" class="modal">
