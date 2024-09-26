@@ -2,7 +2,7 @@ import { ArbolSintactico } from "./arbol_sintactico.js";
 import { Lexema } from "./lexema.js";
 import { Token } from "./token.js";
 
-export class Parser {
+export class Paarser {
   constructor(scanner) {
     this.scanner = scanner;
     this.errores = [];
