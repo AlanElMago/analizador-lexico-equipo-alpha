@@ -41,7 +41,7 @@ header {
     border-radius: 10px;
     font-family: 'calibri';
     color: white;
-    box-shadow: 1px 7px 10px #000;
+    box-shadow: 1px 1px 5px #000;
 }
 
 .form p {
@@ -56,7 +56,7 @@ header {
 }
 
 .form .entrada {
-    width: 100%;
+    width: 96%;
     border-radius: 4px;
     padding: 10px;
     border: 1px solid #ccc;
@@ -66,11 +66,12 @@ header {
 
 .form .container_btn {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    gap: 10px;
 }
 
 .form .btn {
-    width: 20%;
+    width: 30%;
     margin-top: 15px;
     border: none;
     border-radius: 5px;
@@ -109,6 +110,12 @@ header {
     color: white;
 }
 
+#tree-container {
+    margin: 0px auto;
+    width: 100%;
+    height: auto;
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -141,4 +148,5 @@ header {
     color: black;
     text-decoration: none;
     cursor: pointer;
-}  
+}
+
