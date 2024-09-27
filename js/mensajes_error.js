@@ -1,6 +1,6 @@
 export const MensajeErrorSintaxis = {
   asignacionNoVariable: (token) =>
-      `ErrorSintaxis: Solo se permiten asignaciones de variables (columna ${token.columna})`,
+      `ErrorSintaxis: Solo se permiten asignaciones a variables (columna ${token.columna})`,
 
   caracterNoValido: (token) =>
       `ErrorSintaxis: Caracter no válido '${token.valor}' (columna ${token.columna})`,
@@ -10,12 +10,6 @@ export const MensajeErrorSintaxis = {
 
   literalNoTerminado: (token) =>
       `ErrorSintaxis: literal no terminado (columna ${token.columna})`,
-
-  maxArgumentos: (token) =>
-      `ErrorSintaxis: Se superó la cantidad máxima de argumentos de la función (columna ${token.columna})`,
-
-  minArgumentos: (token, minArgumentos) =>
-      `ErrorSintaxis: Se esperaba al menos ${minArgumentos} argumento(s) (columna ${token.columna})`,
 
   seEsperabaDosPuntos: (token) =>
       "ErrorSintaxis: Se esperaba ':'. "
