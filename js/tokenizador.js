@@ -33,17 +33,17 @@ export const tokenizar = (texto) => {
       break;
     }
 
-    const tokenAnterior = tokens[tokens.length - 1] ?? new Token("Nada", Lexema.Tipo.Nada, -1);
+    const tokenAnterior = tokens[tokens.length - 1] ?? new Token(Lexema.Tipo.Nada, "Nada", -1);
 
     if (token.valor === "-"
-        && tokenAnterior.tipo !== Lexema.Tipo.Id
-        && tokenAnterior.tipo !== Lexema.Tipo.Entero
-        && tokenAnterior.tipo !== Lexema.Tipo.Flotante
-        && tokenAnterior.tipo !== Lexema.Tipo.ParentesisCierre
-        && tokenAnterior.tipo !== Lexema.Tipo.CorcheteCierre
-        && tokenAnterior.tipo !== Lexema.Tipo.LlaveCierre
-        || tokenAnterior.tipo === Lexema.Tipo.Nada) {
-      token.tipo = Lexema.Tipo.MenosUnario;
+        && ( tokenAnterior.tipo !== Lexema.Tipo.Id
+          && tokenAnterior.tipo !== Lexema.Tipo.Entero
+          && tokenAnterior.tipo !== Lexema.Tipo.Flotante
+          && tokenAnterior.tipo !== Lexema.Tipo.ParentesisCierre
+          && tokenAnterior.tipo !== Lexema.Tipo.CorcheteCierre
+          && tokenAnterior.tipo !== Lexema.Tipo.LlaveCierre
+          || tokenAnterior.tipo === Lexema.Tipo.Nada )) {
+      token = new Token(Lexema.Tipo.MenosUnario, "-", columna);
     }
 
     tokens.push(token);
