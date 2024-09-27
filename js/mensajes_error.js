@@ -1,4 +1,4 @@
-export const MensajeErrorSintaxis = {
+export const MensajesErrorSintaxis = {
   asignacionNoVariable: (token) =>
       `ErrorSintaxis: Solo se permiten asignaciones a variables (columna ${token.columna})`,
 
