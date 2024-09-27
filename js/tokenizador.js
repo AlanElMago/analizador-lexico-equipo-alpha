@@ -29,13 +29,24 @@ export const tokenizar = (texto) => {
 
     let token = extraerToken(texto.substring(columna), Lexema.Regex, columna);
 
-    tokens.push(token);
-
     if (token.tipo === Lexema.Tipo.Comentario) {
-      tokens.pop();
-
       break;
     }
+
+    const tokenAnterior = tokens[tokens.length - 1] ?? new Token("Nada", Lexema.Tipo.Nada, -1);
+
+    if (token.valor === "-"
+        && tokenAnterior.tipo !== Lexema.Tipo.Id
+        && tokenAnterior.tipo !== Lexema.Tipo.Entero
+        && tokenAnterior.tipo !== Lexema.Tipo.Flotante
+        && tokenAnterior.tipo !== Lexema.Tipo.ParentesisCierre
+        && tokenAnterior.tipo !== Lexema.Tipo.CorcheteCierre
+        && tokenAnterior.tipo !== Lexema.Tipo.LlaveCierre
+        || tokenAnterior.tipo === Lexema.Tipo.Nada) {
+      token.tipo = Lexema.Tipo.MenosUnario;
+    }
+
+    tokens.push(token);
 
     if (token.tipo === Lexema.Tipo.Ilegal) {      
       break;
