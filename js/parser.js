@@ -1,234 +1,157 @@
 import { ArbolSintactico } from "./arbol_sintactico.js";
 import { Lexema } from "./lexema.js";
+import { validarSentencia } from "./reglas_produccion.js";
 import { Token } from "./token.js";
 
-export class Paarser {
+export class Parser {
   constructor(scanner) {
     this.scanner = scanner;
+    this.analisis = [];
     this.errores = [];
-    this.tokenActual = new Token();
   };
 
   // Retorna el arbol sintactico
   parsear = () => {
-    // TODO: validar reglas de producción primero
+    validarSentencia(this);
 
     if (this.hayErrores()) {
-      const tokenError = new Token(Lexema.Tipo.Error, "ErrorSintaxis");
+      const tokenError = new Token(Lexema.Tipo.Error, "Error de Sintaxis");
 
       return new ArbolSintactico(tokenError);
     }
 
-    const arregloRpn = construirArregloRpn(this);
+    if (this.obtenerTokenActual().tipo === Lexema.Tipo.Reservada) {
+      const tokenError = new Token(Lexema.Tipo.Error, "Operación no Soportada");
 
-    return construirArbol(arregloRpn);
-  };
-
-  consumirToken = () => {
-    if (this.tokenActual.tipo === Lexema.Tipo.FinDeArchivo) {
-      return;
+      return new ArbolSintactico(tokenError);
     }
 
-    this.tokenActual = this.scanner.siguienteToken();
+    const arregloNpi = construirArregloNpi(this);
+
+    return construirArbol(arregloNpi);
   };
+
+  obtenerTokenActual = () => this.scanner.obtenerTokenActual();
+
+  haySiguienteToken = () => this.scanner.haySiguienteToken();
+
+  obtenerToken = (i) => this.scanner.obtenerToken(i);
+
+  siguienteToken = () => this.scanner.siguienteToken();
+
+  reiniciar = () => this.scanner.reiniciar();
+
+  registrarToken = () => {
+    const tokenActual = this.obtenerTokenActual();
+
+    this.analisis.push(`${tokenActual.valor} - Tipo: ${tokenActual.tipo}, Columna: ${tokenActual.columna}`);
+    this.scanner.siguienteToken();
+  }
+
+  registrarError = (funcionMensajeError) => this.errores.push(funcionMensajeError(this.obtenerTokenActual()));
 
   hayErrores = () => this.errores.length > 0;
 };
 
-// La precedencia se maneja de manera invertida. Es decir, entre menor el nivel de precedencia de un operador, mayor
-// será su prioridad.
-//
-// Por ejemplo: la multipicación se hace antes que la suma por que el nivel de precedencia de la multipicación es 0 y
-// el nivel de precedencia de la suma es 1.
-const tablaPrecedencia = [
-  // Nivel de precedencia: 0
-  // Multiplicación, División, Módulo
-  [ new Token(Lexema.Tipo.Aritmetico, "*"),
-    new Token(Lexema.Tipo.Aritmetico, "/"),
-    new Token(Lexema.Tipo.Aritmetico, "%") ],
-
-  // Nivel de precedencia: 1
-  // Suma, Resta
-  [ new Token(Lexema.Tipo.Aritmetico, "+"),
-    new Token(Lexema.Tipo.Aritmetico, "-") ],
-
-  // Nivel de precedencia: 2
-  // Menor que, Menor o igual que
-  // Mayor que, Mayor o igual que
-  [ new Token(Lexema.Tipo.Comparacion,  "<"),
-    new Token(Lexema.Tipo.Comparacion, "<="),
-    new Token(Lexema.Tipo.Comparacion,  ">"),
-    new Token(Lexema.Tipo.Comparacion, ">=") ],
-  
-  // Nivel de precedencia: 3
-  // Igual a, No igual a
-  [ new Token(Lexema.Tipo.Comparacion, "=="),
-    new Token(Lexema.Tipo.Comparacion, "!=") ],
-  
-  // Nivel de precedencia: 4
-  // And Lógico
-  [ new Token(Lexema.Tipo.Logico, "Y") ],
-
-  // Nivel de precedencia: 5
-  // Or Lógico
-  [ new Token(Lexema.Tipo.Logico, "O") ],
-
-  // Nivel de precedencia: 6
-  // Asignación
-  [ new Token(Lexema.Tipo.Asignacion, "=") ],
-]
-
-class Operador {
-  constructor(token, nivelPrecedencia) {
-    this.token = token;
-    this.nivelPrecedencia = nivelPrecedencia;
-  }
-}
-
 class PilaOperadores {
   constructor() {
-    this.arreglo = [];
+    this.pila = [];
   }
 
-  push = (token) => this.arreglo.push(new Operador(token, obtenerNivelPrecedenciaToken(token)));
+  push = (token) => this.pila.push(token);
 
-  pop = () => this.arreglo.pop();
+  pop = () => this.pila.pop();
 
-  mirarTope = () => this.arreglo[this.arreglo.length - 1];
+  peek = () => this.pila[this.pila.length - 1];
 
-  estaVacia = () => this.arreglo.length <= 0;
-}
-
-const obtenerNivelPrecedenciaToken = (token) => {
-  let nivelPrecedencia = -1;
-
-  tablaPrecedencia.forEach((operadores, nivel) => {
-    operadores.forEach(operador => {
-      if (token.tipo === operador.tipo && token.valor === operador.valor) {
-        nivelPrecedencia = nivel;
-      }
-    });
-  });
-
-  return nivelPrecedencia;
+  estaVacia = () => this.pila.length <= 0;
 }
 
 // Shunting yard algorithm (modificado por Alan Franco)
 // https://en.wikipedia.org/wiki/Shunting_yard_algorithm
-const construirArregloRpn = (parser) => {
-  const arreglo = [];
+const construirArregloNpi = (parser) => {
+  const salida = [];
   const pilaOperadores = new PilaOperadores();
 
-  // while there are tokens to be read
-  while (parser.tokenActual.tipo !== Lexema.Tipo.FinDeArchivo)
-  {
-    // read a token
-    parser.consumirToken();
+  while (parser.obtenerTokenActual().tipo !== Lexema.Tipo.FinDeArchivo) {
+    const tokenActual = parser.obtenerTokenActual();
+    parser.siguienteToken();
 
-    // if the token is:
-    // - a number or identifier
-    if ( parser.tokenActual.tipo === Lexema.Tipo.Entero
-      || parser.tokenActual.tipo === Lexema.Tipo.Flotante
-      || parser.tokenActual.tipo === Lexema.Tipo.Id )
-    {
-      // put it into the output queue
-      arreglo.push(parser.tokenActual);
+    if (   tokenActual.tipo === Lexema.Tipo.Entero
+        || tokenActual.tipo === Lexema.Tipo.Flotante
+        || tokenActual.tipo === Lexema.Tipo.Booleano
+        || tokenActual.tipo === Lexema.Tipo.Cadena
+        || tokenActual.tipo === Lexema.Tipo.Id ) {
+      salida.push(tokenActual);
     }
 
-    // - a function
-    // TODO: implement function case
+    else if (tokenActual.tipo === Lexema.Tipo.Funcion) {
+      pilaOperadores.push(tokenActual);
+    }
 
-    // - an operator o1:
-    else if ( parser.tokenActual.tipo === Lexema.Tipo.Aritmetico
-           || parser.tokenActual.tipo === Lexema.Tipo.Asignacion
-           || parser.tokenActual.tipo === Lexema.Tipo.Logico
-           || parser.tokenActual.tipo === Lexema.Tipo.Comparacion )
-    {
-      // while (
-      //   the operator stack is not empty,
-      //   and there is an operator o2 at the top of the operator stack which is not a left parenthesis,
-      //   and o2 has less than or equal precedence to o1
-      // ):
-      while (!pilaOperadores.estaVacia()
-        && pilaOperadores.mirarTope().token.tipo !== Lexema.Tipo.ParentesisApertura
-        && pilaOperadores.mirarTope().nivelPrecedencia <= obtenerNivelPrecedenciaToken(parser.tokenActual))
-      {
-        // pop o2 from the operator stack into the output queue
-        arreglo.push(pilaOperadores.pop().token)
+    else if (tokenActual.esOperador()) {
+      while (!pilaOperadores.estaVacia() && pilaOperadores.peek().tipo !== Lexema.Tipo.ParentesisApertura
+          && (pilaOperadores.peek().nivelPrecedencia < tokenActual.nivelPrecedencia
+            || (pilaOperadores.peek().nivelPrecedencia === tokenActual.nivelPrecedencia
+              && tokenActual.esAsociativoIzquierda()))) {
+        salida.push(pilaOperadores.pop())
       }
 
-      // push o1 onto the operator stack
-      pilaOperadores.push(parser.tokenActual);
+      pilaOperadores.push(tokenActual);
     }
 
-    // - a left parenthisis:
-    else if ( parser.tokenActual.tipo === Lexema.Tipo.ParentesisApertura )
-    {
-      // push it onto the operator stack
-      pilaOperadores.push(parser.tokenActual);
+    else if (tokenActual.valor === ",") {
+      while (pilaOperadores.peek().tipo !== Lexema.Tipo.ParentesisApertura) {
+        salida.push(pilaOperadores.pop());
+      }
     }
 
-    // - a right parenthisis:
-    else if ( parser.tokenActual.tipo === Lexema.Tipo.ParentesisCierre )
-    {
-      // while the operator at the top of the operator stack is not a left parenthesis:
-      while (pilaOperadores.mirarTope().token.tipo !== Lexema.Tipo.ParentesisApertura)
-      {
-        // pop the operator from the operator stack into the output queue
-        arreglo.push(pilaOperadores.pop().token);
+    else if (tokenActual.tipo === Lexema.Tipo.ParentesisApertura) {
+      pilaOperadores.push(tokenActual);
+    }
+
+    else if (tokenActual.tipo === Lexema.Tipo.ParentesisCierre) {
+      while (pilaOperadores.peek().tipo !== Lexema.Tipo.ParentesisApertura) {
+        salida.push(pilaOperadores.pop());
       }
 
-      // pop the left parenthesis from the operator stack and discard it
       pilaOperadores.pop();
 
-      // TODO: if there is a function token at the top of the operator stack, then:
-      //   pop the function from the operator stack into the output queue
+      if (!pilaOperadores.estaVacia() && pilaOperadores.peek().tipo === Lexema.Tipo.Id) {
+        salida.push(pilaOperadores.pop());
+      }
     }
   }
 
-  // while there are tokens on the operator stack:
-  while (!pilaOperadores.estaVacia())
-  {
-    // pop the operator from the operator stack onto the output queue
-    arreglo.push(pilaOperadores.pop().token);
+  while (!pilaOperadores.estaVacia()) {
+    salida.push(pilaOperadores.pop());
   }
 
-  return arreglo;
+  return salida;
 }
 
-const construirArbol = (arregloRpn = []) => {
-  if (arregloRpn.length <= 0) {
+const construirArbol = (arregloNpi = []) => {
+  if (arregloNpi.length <= 0) {
     return new ArbolSintactico();
   }
 
-  if (arregloRpn.length <= 1) {
-    return new ArbolSintactico(arregloRpn.pop());
+  if (arregloNpi.length <= 1) {
+    return new ArbolSintactico(arregloNpi.pop());
   }
 
   // Padre
-  const arbol = new ArbolSintactico(arregloRpn.pop());
+  const arbol = new ArbolSintactico(arregloNpi.pop());
 
-  // Hijo Derecho
-  let tokenActual = arregloRpn[arregloRpn.length - 1]; 
+  // Hijos
+  for (let numArgumento = 0; numArgumento < arbol.token.numArgumentos; numArgumento++) {
+    const tokenActual = arregloNpi[arregloNpi.length - 1]; 
 
-  if (   tokenActual.tipo === Lexema.Tipo.Entero
-      || tokenActual.tipo === Lexema.Tipo.Flotante
-      || tokenActual.tipo === Lexema.Tipo.Id ) {
-    arbol.hijos.unshift(new ArbolSintactico(arregloRpn.pop()));
-  } else {
-    arbol.hijos.unshift(construirArbol(arregloRpn));
+    if (tokenActual.esOperador()) {
+      arbol.hijos.unshift(construirArbol(arregloNpi));
+    } else {
+      arbol.hijos.unshift(new ArbolSintactico(arregloNpi.pop()));
+    }
   }
 
-  // Hijo Izquierdo
-  tokenActual = arregloRpn[arregloRpn.length - 1]; 
-
-  if (   tokenActual.tipo === Lexema.Tipo.Entero
-      || tokenActual.tipo === Lexema.Tipo.Flotante
-      || tokenActual.tipo === Lexema.Tipo.Id ) {
-    arbol.hijos.unshift(new ArbolSintactico(arregloRpn.pop()));
-  } else {
-    arbol.hijos.unshift(construirArbol(arregloRpn));
-  }
-    
   return arbol;
 }
