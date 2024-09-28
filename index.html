@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Analizador Léxico</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
   <header>
     <img class="logo" src="img/logo.png" width="200" height="80">
@@ -19,13 +21,13 @@
   </div>
 
   <form class="form">
-    <h1>Analizador Léxico</h1>
+    <h1>Analizador Léxico y Sintáctico</h1>
     <p>Introduzca la instrucción que desea analizar:</p>
     <input class="entrada" id="entrada"type="text"/>
     <div class="container_btn">
-      <button class="btn verde" id="btn-analizar">Analizador Léxico</button>
-      <button class="btn verde" id="btn-sintax">Analizador Sintáctico</button>
-      <button class="btn verde" id="btn-lexsintax">Analizador Lex-Sintax</button>
+      <button class="btn verde" id="btn-lexico">Analizador Léxico</button>
+      <button class="btn verde" id="btn-sintactico">Analizador Sintáctico</button>
+      <button class="btn verde" id="btn-lexico-y-sintactico">Analizador Léxico y Sintáctico</button>
     </div>
     <p>Análisis:</p>
     <textarea class="output" id="salida" cols="65" rows="20" readonly></textarea>
@@ -38,10 +40,22 @@
   <div id="Modal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <p>Equipo: ALFA<br>Integrantes:<br>- Franco Beltrán José Alan<br>- González Ortíz Brayan de Jesús<br>- González Paz Salma<br>- González Regalado Efrain<br>- Guerrero Aguilar Juan Manuel<br>- Lozano Flores Angel Ezequiel<br>- Martínez Rivera Milton Yahir<br>- Ramos Rodríguez Cesia Keren<br>- Rebollar Cabriales Carlos Eduardo</p>
+      <p>Equipo: ALFA
+        <br>Integrantes:
+        <br>- Franco Beltrán José Alan
+        <br>- González Ortíz Brayan de Jesús
+        <br>- González Paz Salma
+        <br>- González Regalado Efrain
+        <br>- Guerrero Aguilar Juan Manuel
+        <br>- Lozano Flores Angel Ezequiel
+        <br>- Martínez Rivera Milton Yahir
+        <br>- Ramos Rodríguez Cesia Keren
+        <br>- Rebollar Cabriales Carlos Eduardo
+      </p>
     </div>
   </div>
 
   <script type="module" src="./js/index.js"></script>
 </body>
+
 </html>
