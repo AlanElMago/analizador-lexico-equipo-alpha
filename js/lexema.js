@@ -2,6 +2,7 @@ export const Lexema = {
   Tipo: {
     Funcion: "funcion",
     Reservada: "palabra reservada",
+    Logico: "operador lógico",
     Booleano: "literal booleana",
     Nada: "nada",
     Id: "identificador",
@@ -11,6 +12,7 @@ export const Lexema = {
     Cadena: "literal de cadena",
     Comparacion: "operador de comparación",
     Aritmetico: "operador aritmético",
+    MenosUnario: "menos unario",
     Asignacion: "operador de asignación",
     Delimitador: "delimitador",
     ParentesisApertura: "paréntesis de apertura",
@@ -27,6 +29,7 @@ export const Lexema = {
   Regex: {
     Funcion: /^(equipo|imprimir|entrada|suma|longitud|lista|cadena|rango|cremallera|flotante|entero|rebanada|redondear|tupla|tipo|ordenado|potencia|conjunto)\b/,
     Reservada: /^(si|osi|sino|para|en)/,
+    Logico: /^(O|Y|NO)/,
     Booleano: /^(Verdadero|Falso)/,
     Nada: /^Nada/,
     Id: /^[a-zA-Z_][a-zA-Z0-9_]*/,
@@ -35,7 +38,8 @@ export const Lexema = {
     Comentario: /^(#.*|("""[\s\S]*?""")|('''[\s\S]*?'''))/,
     Cadena: /^(['"][^'"]*['"])/,
     Comparacion: /^(==|!=|>=|<=|>|<)/,
-    Aritmetico: /^(\+|-|\*|\/|%)/,
+    Aritmetico: /^(\*\*|\+|-|\*|\/|%)/,
+    MenosUnario: /^-/,
     Asignacion: /^=/,
     Delimitador: /^(:|;|\.|,)/,
     ParentesisApertura: /^\(/,
