@@ -21,7 +21,6 @@
 <script type="module">
   import { Scanner } from '../js/scanner.js';
   import { Parser } from '../js/parser.js';
-  import { generarNotacionPolaca, generarNotacionPolacaInversa } from '../js/arbol_sintactico.js';
   import { generarArbolSintactico } from '../js/arbol_d3.js';
 
   const button = document.querySelector('#btn-generar');
@@ -31,11 +30,6 @@
     const scanner = new Scanner(entrada.value);
     const parser = new Parser(scanner);
     const arbol = parser.parsear();
-
-    if (parser.hayErrores()) {      
-      alert("Error al generar el árbol sintáctico");
-      return;
-    }
 
     generarArbolSintactico(arbol);
   });
