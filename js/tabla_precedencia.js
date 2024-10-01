@@ -1,5 +1,8 @@
 import { Lexema } from "./lexema.js";
 
+/**
+ * El nivel de precedencia de cada operador.
+ */
 export const tablaPrecedencia = [
   // Nivel de precedencia: 0
   {tipo: Lexema.Tipo.MenosUnario, valor: "-" , nivelPrecedencia: 0}, // Menos unario
