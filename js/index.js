@@ -18,7 +18,7 @@ const analisisLexico = () => {
 
   parser.parsear();
 
-  salida.value = parser.analisis.join("\n");
+  salida.value = parser.infoTokens.join("\n");
 
   if (parser.hayErrores()) {
     salida.value += "\n";
