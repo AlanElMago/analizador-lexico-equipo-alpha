@@ -1,30 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Analizador Léxico</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-  <p>Entrada:</p>
-  <input id="entrada" size="80"/>
-  <p>Salida:</p>
-  <textarea id="salida" cols="80" rows="20" readonly></textarea>
-  <button id="btn-analizar">Analizar</button>
+  <header>
+    <img class="logo" src="img/logo.png" width="200" height="80">
+    <h1>Ingeniero en sistemas computacionales</h1>
+    <img class= "logo2" src="img/logo2.png" width="270" height="80">
+  </header>
+
+  <div class="container">
+    <p>Grupo: EFJ</p>
+    <p>Equipo: ALFA</p>
+  </div>
+
+  <form class="form">
+    <h1>Analizador Léxico y Sintáctico</h1>
+    <p>Introduzca la instrucción que desea analizar:</p>
+    <input class="entrada" id="entrada"type="text"/>
+    <div class="container_btn">
+      <button class="btn verde" id="btn-lexico">Analizador Léxico</button>
+      <button class="btn verde" id="btn-sintactico">Analizador Sintáctico</button>
+      <button class="btn verde" id="btn-lexico-y-sintactico">Analizador Léxico y Sintáctico</button>
+    </div>
+    <p>Análisis:</p>
+    <textarea class="output" id="salida" cols="65" rows="20" readonly></textarea>
+    <div id="tree-container"></div>
+    <button class="btn azul" id="btn-limpiar">Limpiar</button>
+    <button class="btn azul" id="btn-equipo">Equipo</button>
+    <button class="btn rojo" id="btn-salir">Salir</button>
+  </form>
+
+  <div id="Modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p>Equipo: ALFA
+        <br>Integrantes:
+        <br>- Franco Beltrán José Alan
+        <br>- González Ortíz Brayan de Jesús
+        <br>- González Paz Salma
+        <br>- González Regalado Efrain
+        <br>- Guerrero Aguilar Juan Manuel
+        <br>- Lozano Flores Angel Ezequiel
+        <br>- Martínez Rivera Milton Yahir
+        <br>- Ramos Rodríguez Cesia Keren
+        <br>- Rebollar Cabriales Carlos Eduardo
+      </p>
+    </div>
+  </div>
+
+  <script type="module" src="./js/index.js"></script>
 </body>
-<!-- Scripts -->
-<script type="module">
-  import { analizar } from './js/analizadores/analizador-maestro.js';
 
-  const btnAnalizar = document.getElementById('btn-analizar');
-  const entrada = document.getElementById('entrada');
-  const salida = document.getElementById('salida');
-
-  btnAnalizar.addEventListener('click', () => {
-    const texto = entrada.value;
-    const textoSalida = analizar(texto);
-    salida.value = textoSalida.join('\n');
-  });
-</script>
 </html>

@@ -1,6 +1,152 @@
 body {
-    background-color: #f0f0f0;
+    background-color: beige;
     font-family: Arial, sans-serif;
-    margin: 0;
+    margin: 10;
     padding: 0;
+    align-self: center;
 }
+
+header {
+    position: relative;
+    background-color: beige ;
+    padding: 15px;
+    text-align: center;
+}
+
+.logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.logo2 {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 5px;
+}
+
+.form {
+    width: 500px;
+    background: white;
+    padding: 30px;
+    margin: auto;
+    margin-top: 10px;
+    border-radius: 10px;
+    font-family: 'calibri';
+    color: white;
+    box-shadow: 1px 1px 5px #000;
+}
+
+.form p {
+    color: #000;
+    height: 40px;
+    font-size: 18px;
+    line-height: 40px;
+}
+
+.form h1 {
+    color: black;
+}
+
+.form .entrada {
+    width: 96%;
+    border-radius: 4px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-size: 18px;
+    color: black;
+}
+
+.form .container_btn {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.form .btn {
+    width: 30%;
+    margin-top: 15px;
+    border: none;
+    border-radius: 5px;
+    padding: 12px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.form .verde {
+    background-color: rgb(48, 179, 48);
+    color: white;
+}
+
+.form .verde:hover {
+    background-color: rgb(14, 129, 14);
+    color: white;
+}
+
+.form .azul {
+    background-color: rgb(56, 56, 247);
+    color: white;
+}
+
+.form .azul:hover {
+    background-color: rgb(14, 14, 129);
+    color: white;
+}
+
+.form .rojo {
+    background-color: rgb(247, 56, 56);
+    color: white;
+}
+
+.form .rojo:hover {
+    background-color: rgb(129, 14, 14);
+    color: white;
+}
+
+#tree-container {
+    margin: 0px auto;
+    width: 100%;
+    height: auto;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 10px;
+    width: 50%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+.close:hover, .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
