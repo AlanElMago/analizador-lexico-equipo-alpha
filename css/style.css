@@ -33,7 +33,7 @@ header {
 }
 
 .form {
-    width: 500px;
+    width: 70%;
     background: white;
     padding: 30px;
     margin: auto;
@@ -64,6 +64,11 @@ header {
     color: black;
 }
 
+textarea {
+    width: 100%;
+    height: 300px;
+}
+
 .form .container_btn {
     display: flex;
     justify-content: space-between;
@@ -71,7 +76,7 @@ header {
 }
 
 .form .btn {
-    width: 30%;
+    /* width: 10%; */
     margin-top: 15px;
     border: none;
     border-radius: 5px;
