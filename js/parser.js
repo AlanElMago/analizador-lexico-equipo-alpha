@@ -3,7 +3,7 @@ import { construirArregloNpi } from "./contruir_arreglo_npi.js";
 import { Lexema } from "./lexema.js";
 import { Scanner } from "./scanner.js";
 import { Token } from "./token.js";
-import { validarSentencia } from "./reglas_produccion.js";
+import { Validador } from "./validador.js";
 
 /**
  * Representa el parser de un compilador. El parser se encarga del análisis sintáctico de un código fuente.
@@ -31,6 +31,12 @@ export class Parser {
      * @type {Array<string>}
      */
     this.errores = [];
+
+    /**
+     * El analizador semántico que valida las reglas de producción del código fuente.
+      * @type {Validador}
+     */
+    this.validador = new Validador();
   };
 
   /**
@@ -41,7 +47,7 @@ export class Parser {
    */
   parsear = () => {
     // validar la gramática del código fuente
-    validarSentencia(this, this.scanner);
+    this.validador.validar(this, this.scanner);
 
     if (this.hayErrores()) {
       const tokenError = new Token(Lexema.Tipo.Error, "Error de Sintaxis");
