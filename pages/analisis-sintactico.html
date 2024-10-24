@@ -4,34 +4,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Árbol Sintáctico</title>
+  <title>Analisis Sintactico</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
   <p>Entrada:</p>
   <input id="entrada" size="80" />
-  <button id="btn-generar">Generar</button>
-  
-  <!-- Contenedor para el SVG del árbol -->
-  <div id="tree-container"></div>
-
+  <p>Salida:</p>
+  <textarea id="salida-analisis" cols="80" rows="20" readonly></textarea>
+  <textarea id="salida-errores" cols="80" rows="20" readonly></textarea>
+  <button id="btn-tokenizar">Analizar</button>
 </body>
 
 <script type="module">
   import { Scanner } from '../js/scanner.js';
   import { Parser } from '../js/parser.js';
-  import { generarArbolSintactico } from '../js/arbol_d3.js';
 
-  const button = document.querySelector('#btn-generar');
+  const button = document.querySelector('#btn-tokenizar');
   const entrada = document.querySelector('#entrada');
+  const salida_analisis = document.querySelector('#salida-analisis');
+  const salida_errores = document.querySelector('#salida-errores');
 
   button.addEventListener('click', () => {
     const scanner = new Scanner(entrada.value);
     const parser = new Parser(scanner);
-    const arbol = parser.parsear();
 
-    generarArbolSintactico(arbol);
+    parser.parsear();
+
+    salida_analisis.value = parser.analisis.join("\n");
+    salida_errores.value = parser.errores.join("\n");
   });
 </script>
 

@@ -1,4 +1,24 @@
+/**
+ * Contiene la definición de tipos y expresiones regulares de los lexemas.
+ * @namespace Lexema
+ */
+
+/**
+ * Contiene definiciones de los tipos de lexemas.
+ * @typedef {Object.<string, string>} Lexema.Tipo
+ * @memberof Lexema
+ */
+
+/**
+ * Contiene expresiones regulares de los lexemas.
+ * @typedef {Object.<string, RegExp>} Lexema.Regex
+ * @memberof Lexema
+ */
+
 export const Lexema = {
+  /**
+   * Definiciones de tipos de lexemas.
+   */
   Tipo: {
     Funcion: "funcion",
     Reservada: "palabra reservada",
@@ -12,6 +32,7 @@ export const Lexema = {
     Cadena: "literal de cadena",
     Comparacion: "operador de comparación",
     Aritmetico: "operador aritmético",
+    MenosUnario: "menos unario",
     Asignacion: "operador de asignación",
     Delimitador: "delimitador",
     ParentesisApertura: "paréntesis de apertura",
@@ -25,6 +46,9 @@ export const Lexema = {
     Ilegal: "ilegal"
   },
 
+  /**
+   * Expresiones regulares de los lexemas.
+   */
   Regex: {
     Funcion: /^(equipo|imprimir|entrada|suma|longitud|lista|cadena|rango|cremallera|flotante|entero|rebanada|redondear|tupla|tipo|ordenado|potencia|conjunto)\b/,
     Reservada: /^(si|osi|sino|para|en)/,
@@ -37,7 +61,7 @@ export const Lexema = {
     Comentario: /^(#.*|("""[\s\S]*?""")|('''[\s\S]*?'''))/,
     Cadena: /^(['"][^'"]*['"])/,
     Comparacion: /^(==|!=|>=|<=|>|<)/,
-    Aritmetico: /^(\+|-|\*|\/|%)/,
+    Aritmetico: /^(\*\*|\+|-|\*|\/|%)/,
     Asignacion: /^=/,
     Delimitador: /^(:|;|\.|,)/,
     ParentesisApertura: /^\(/,
@@ -48,9 +72,14 @@ export const Lexema = {
     LlaveCierre: /^\}/
   },
 
-  obtenerTipo: (token) => {
-    for (const tipo in Lexema.Tipo) {
-      if (Lexema.Regex[tipo].test(token)) {
+  /**
+   * Obtiene el tipo de lexema de una cadena.
+   * @param {string} cadena - La cadena a analizar.
+   * @returns {string} El tipo de lexema de la cadena. Si no se encuentra un lexema válido, retorna un lexema ilegal.
+   */
+  obtenerTipo: (cadena) => {
+    for (const [tipo, regex] of Object.entries(Lexema.Regex)) {
+      if (regex.test(cadena)) {
         return Lexema.Tipo[tipo];
       }
     }
