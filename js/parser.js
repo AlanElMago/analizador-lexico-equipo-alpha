@@ -1,18 +1,53 @@
-import { ArbolSintactico } from "./arbol_sintactico.js";
+import { ArbolSintactico, construirArbolSintactico } from "./arbol_sintactico.js";
+import { construirArregloNpi } from "./contruir_arreglo_npi.js";
 import { Lexema } from "./lexema.js";
-import { validarSentencia } from "./reglas_produccion.js";
+import { Scanner } from "./scanner.js";
 import { Token } from "./token.js";
+import { Validador } from "./validador.js";
 
+/**
+ * Representa el parser de un compilador. El parser se encarga del análisis sintáctico de un código fuente.
+ */
 export class Parser {
+  /**
+   * Craer un parser.
+   * @param {Scanner} scanner - El scanner que le pasará los tokens al parser.
+   */
   constructor(scanner) {
+    /**
+     * El scanner que le pasa los tokens al parser.
+     * @type {Scanner}
+     */
     this.scanner = scanner;
-    this.analisis = [];
+
+    /**
+     * Un arreglo de cadenas con información sobre cada token registrado.
+     * @type {Array<string>}
+     */
+    this.infoTokens = [];
+
+    /**
+     * Un arreglo de cadenas con información de cada error encontrado durante la fase de validación de gramática.
+     * @type {Array<string>}
+     */
     this.errores = [];
+
+    /**
+     * El analizador semántico que valida las reglas de producción del código fuente.
+      * @type {Validador}
+     */
+    this.validador = new Validador();
   };
 
-  // Retorna el arbol sintactico
+  /**
+   * Valida la gramática y genera una representación del árbol sintáctico del código fuente.
+   * @returns {ArbolSintactico} El árbol sintáctico del código fuente. Si se encuentra un error durante la fase de
+   * validación, retorna un árbol sintáctico con un token de valor `Error de Sintaxis`. Si se encuentra una operación
+   * que aún no se soporta, retorna un arbol sintáctico con un token de valor `Operación no Soportada`.
+   */
   parsear = () => {
-    validarSentencia(this);
+    // validar la gramática del código fuente
+    this.validador.validar(this, this.scanner);
 
     if (this.hayErrores()) {
       const tokenError = new Token(Lexema.Tipo.Error, "Error de Sintaxis");
@@ -20,138 +55,43 @@ export class Parser {
       return new ArbolSintactico(tokenError);
     }
 
-    if (this.obtenerTokenActual().tipo === Lexema.Tipo.Reservada) {
+    if (this.scanner.obtenerTokenActual().tipo === Lexema.Tipo.Reservada) {
       const tokenError = new Token(Lexema.Tipo.Error, "Operación no Soportada");
 
       return new ArbolSintactico(tokenError);
     }
 
-    const arregloNpi = construirArregloNpi(this);
+    // construir un arreglo de tokens en orden postfija (notación polaca inversa)
+    const arregloNpi = construirArregloNpi(this.scanner);
 
-    return construirArbol(arregloNpi);
+    return construirArbolSintactico(arregloNpi);
   };
 
-  obtenerTokenActual = () => this.scanner.obtenerTokenActual();
+  /**
+   * Consume el token actual del scanner y cambia al siguiente token.
+   * @param {boolean} registrarToken - Registrar o no la información del token actual del scanner.
+   * @returns {void}
+   */
+  consumirToken = (registrarToken = false) => {
+    const tokenActual = this.scanner.obtenerTokenActual();
 
-  haySiguienteToken = () => this.scanner.haySiguienteToken();
+    if (registrarToken) {
+      this.infoTokens.push(`${tokenActual.valor} - Tipo: ${tokenActual.tipo}, Columna: ${tokenActual.columna}`);
+    }
 
-  obtenerToken = (i) => this.scanner.obtenerToken(i);
-
-  siguienteToken = () => this.scanner.siguienteToken();
-
-  reiniciar = () => this.scanner.reiniciar();
-
-  registrarToken = () => {
-    const tokenActual = this.obtenerTokenActual();
-
-    this.analisis.push(`${tokenActual.valor} - Tipo: ${tokenActual.tipo}, Columna: ${tokenActual.columna}`);
     this.scanner.siguienteToken();
   }
 
-  registrarError = (funcionMensajeError) => this.errores.push(funcionMensajeError(this.obtenerTokenActual()));
+  /**
+   * Registra en el parser la información de un error encontrado en base al token actual del scanner.
+   * @param {(token: Token) => string} funcionMensajeError - La función que genera el mensaje de error.
+   * @returns {void}
+   */
+  registrarError = (funcionMensajeError) => this.errores.push(funcionMensajeError(this.scanner.obtenerTokenActual()));
 
+  /**
+   * Checa si hay errores registrados en el parser.
+   * @returns {boolean} `true` si hay al menos un error registrado en el parser, de lo contrario, `false`.
+   */
   hayErrores = () => this.errores.length > 0;
 };
-
-class PilaOperadores {
-  constructor() {
-    this.pila = [];
-  }
-
-  push = (token) => this.pila.push(token);
-
-  pop = () => this.pila.pop();
-
-  peek = () => this.pila[this.pila.length - 1];
-
-  estaVacia = () => this.pila.length <= 0;
-}
-
-// Shunting yard algorithm (modificado por Alan Franco)
-// https://en.wikipedia.org/wiki/Shunting_yard_algorithm
-const construirArregloNpi = (parser) => {
-  const salida = [];
-  const pilaOperadores = new PilaOperadores();
-
-  while (parser.obtenerTokenActual().tipo !== Lexema.Tipo.FinDeArchivo) {
-    const tokenActual = parser.obtenerTokenActual();
-    parser.siguienteToken();
-
-    if (   tokenActual.tipo === Lexema.Tipo.Entero
-        || tokenActual.tipo === Lexema.Tipo.Flotante
-        || tokenActual.tipo === Lexema.Tipo.Booleano
-        || tokenActual.tipo === Lexema.Tipo.Cadena
-        || tokenActual.tipo === Lexema.Tipo.Id ) {
-      salida.push(tokenActual);
-    }
-
-    else if (tokenActual.tipo === Lexema.Tipo.Funcion) {
-      pilaOperadores.push(tokenActual);
-    }
-
-    else if (tokenActual.esOperador()) {
-      while (!pilaOperadores.estaVacia() && pilaOperadores.peek().tipo !== Lexema.Tipo.ParentesisApertura
-          && (pilaOperadores.peek().nivelPrecedencia < tokenActual.nivelPrecedencia
-            || (pilaOperadores.peek().nivelPrecedencia === tokenActual.nivelPrecedencia
-              && tokenActual.esAsociativoIzquierda()))) {
-        salida.push(pilaOperadores.pop())
-      }
-
-      pilaOperadores.push(tokenActual);
-    }
-
-    else if (tokenActual.valor === ",") {
-      while (pilaOperadores.peek().tipo !== Lexema.Tipo.ParentesisApertura) {
-        salida.push(pilaOperadores.pop());
-      }
-    }
-
-    else if (tokenActual.tipo === Lexema.Tipo.ParentesisApertura) {
-      pilaOperadores.push(tokenActual);
-    }
-
-    else if (tokenActual.tipo === Lexema.Tipo.ParentesisCierre) {
-      while (pilaOperadores.peek().tipo !== Lexema.Tipo.ParentesisApertura) {
-        salida.push(pilaOperadores.pop());
-      }
-
-      pilaOperadores.pop();
-
-      if (!pilaOperadores.estaVacia() && pilaOperadores.peek().tipo === Lexema.Tipo.Id) {
-        salida.push(pilaOperadores.pop());
-      }
-    }
-  }
-
-  while (!pilaOperadores.estaVacia()) {
-    salida.push(pilaOperadores.pop());
-  }
-
-  return salida;
-}
-
-const construirArbol = (arregloNpi = []) => {
-  if (arregloNpi.length <= 0) {
-    return new ArbolSintactico();
-  }
-
-  if (arregloNpi.length <= 1) {
-    return new ArbolSintactico(arregloNpi.pop());
-  }
-
-  // Padre
-  const arbol = new ArbolSintactico(arregloNpi.pop());
-
-  // Hijos
-  for (let numArgumento = 0; numArgumento < arbol.token.numArgumentos; numArgumento++) {
-    const tokenActual = arregloNpi[arregloNpi.length - 1]; 
-
-    if (tokenActual.esOperador()) {
-      arbol.hijos.unshift(construirArbol(arregloNpi));
-    } else {
-      arbol.hijos.unshift(new ArbolSintactico(arregloNpi.pop()));
-    }
-  }
-
-  return arbol;
-}
