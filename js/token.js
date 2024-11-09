@@ -12,7 +12,7 @@ export class Token {
    * @param {string} valor - El valor del token.
    * @param {number} columna - La columna donde se encontró el token dentro de un código fuente.
    */
-  constructor(tipo = Lexema.Tipo.Nada, valor = "", columna = 0) {
+  constructor(tipo = Lexema.Tipo.Nada, valor = "", linea = 0, columna = 0) {
     /**
      * El tipo de lexema del token.
      * @type {string}
@@ -24,6 +24,12 @@ export class Token {
      * @type {string}
      */
     this.valor = valor;
+
+    /**
+     * El número de linea donde se encontró el token dentro de un código fuente.
+     * @type {number}
+     */
+    this.linea = linea;
 
     /**
      * El número de columna donde se encontró el token dentro de un código fuente.
