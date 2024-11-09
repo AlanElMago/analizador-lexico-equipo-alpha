@@ -73,7 +73,7 @@ export const tokenizar = (texto) => {
     const tokenAnterior = tokens[tokens.length - 1] ?? new Token(Lexema.Tipo.Nada, "Nada", 0, -1);
 
     // si el token no es un tabulador para indentar, ignóralo
-    if (token.tipo === Lexema.Tipo.Indentacion && (columna !== 0 || tokenAnterior.tipo !== Lexema.Tipo.Indentacion)) {
+    if (token.tipo === Lexema.Tipo.Indentacion && columna !== 0 && tokenAnterior.tipo !== Lexema.Tipo.Indentacion) {
       columna++;
       indiceTexto++;
 
