@@ -57,4 +57,10 @@ export class Scanner {
    * @returns {void}
    */
   reiniciar = () => this.indice = 0;
+
+  /**
+   * Obtiene el número total de líneas que contiene el código fuente.
+   * @returns {number} El número total de líneas que contiene el código fuente.
+   */
+  obtenerNumLineas = () => this.tokens[this.tokens.length - 1].linea;
 };

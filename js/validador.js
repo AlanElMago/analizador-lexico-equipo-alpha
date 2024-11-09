@@ -22,7 +22,11 @@ export class Validador {
     this.reglasProduccion = {}
   }
 
-  validar = (parser, scanner) => validarSentencia(this, parser, scanner);
+  validar = (parser, scanner) => {
+    for(let numLinea = 1; numLinea <= scanner.obtenerNumLineas(); numLinea++) {
+      validarSentencia(this, parser, scanner, numLinea);
+    }
+  }
 
   /**
    * Registra una regla de producción en el diccionario de reglas de producción.
@@ -44,14 +48,24 @@ export class Validador {
  * <Sentencia> -> <Asignación> | <Expresión>
  * <Sentencia> -> <SentenciaSi> | <SentenciaOsi> | <SentenciaSino> | <SentenciaPara> | <SentenciaMientras>
  * ```
+ * @param {Validador} validador
  * @param {Parser} parser
  * @param {Scanner} scanner
+ * @param {number} numLinea
  * @returns {void}
  */
-const validarSentencia = (validador, parser, scanner) => {
-  scanner.reiniciar();
+const validarSentencia = (validador, parser, scanner, numLinea) => {
+  // checar si la línea está vacía
+  if (scanner.obtenerTokenActual().linea > numLinea) {
+    return;
+  }
 
-  if (scanner.haySiguienteToken() && scanner.obtenerToken(1).valor === "=") {
+  // ignorar indentaciones (solo nos interesa la gramática de la línea, no si está correctamente indentada)
+  while (scanner.obtenerTokenActual().tipo === Lexema.Tipo.Indentacion) {
+    scanner.siguienteToken();
+  }
+
+  if (scanner.haySiguienteToken() && scanner.tokens[scanner.indice + 1].valor === "=") {
     validador.registrarReglaProduccion("Sentencia", "<Asignacion>");
 
     validarAsignacion(validador, parser, scanner); // <Asignación>
@@ -81,27 +95,24 @@ const validarSentencia = (validador, parser, scanner) => {
     validarExpresion(validador, parser, scanner); // <Expresión>
   }
 
-  // la sintaxis es válida si se llega al final del archivo
-  if (scanner.obtenerTokenActual().tipo === Lexema.Tipo.FinDeArchivo) {
-    scanner.reiniciar();
+  // la sintaxis es válida si se llega al final de la línea o al final del archivo
+  if (scanner.obtenerTokenActual().linea > numLinea
+      || scanner.obtenerTokenActual().tipo === Lexema.Tipo.FinDeArchivo) {
 
     return;
   }
 
   if (scanner.obtenerTokenActual().valor === "'" || scanner.obtenerTokenActual().valor === '"') {
     parser.registrarError(MensajesErrorSintaxis.literalNoTerminado);
-
-    return;
-  }
-  
-  if (scanner.obtenerTokenActual().tipo === Lexema.Tipo.Ilegal) {
+  } else if (scanner.obtenerTokenActual().tipo === Lexema.Tipo.Ilegal) {
     parser.registrarError(MensajesErrorSintaxis.caracterNoValido);
-
-    return;
+  } else if (!parser.hayErrores()) {
+    parser.registrarError(MensajesErrorSintaxis.errorDesconocido);
   }
-  
-  if (!parser.hayErrores()) {
-    parser.registrarError(MensajesErrorSintaxis.simboloInesperado);
+
+  // ir a la siguiente línea o final del archivo
+  while (scanner.obtenerTokenActual().linea < numLinea && scanner.obtenerTokenActual() !== Lexema.Tipo.FinDeArchivo) {
+    scanner.siguienteToken();
   }
 }
 
@@ -195,6 +206,8 @@ const validarOperando = (validador, parser, scanner) => {
     validador.registrarReglaProduccion("LiteralBooleano", scanner.obtenerTokenActual().valor);
 
     parser.consumirToken(true) // <LiteralBooleano>
+
+    return;
   }
 
 
@@ -204,6 +217,8 @@ const validarOperando = (validador, parser, scanner) => {
     validador.registrarReglaProduccion("LiteralEntero", scanner.obtenerTokenActual().valor);
 
     parser.consumirToken(true) // <LiteralEntero>
+
+    return;
   }
 
   if (scanner.obtenerTokenActual().tipo === Lexema.Tipo.Flotante) {
@@ -212,6 +227,8 @@ const validarOperando = (validador, parser, scanner) => {
     validador.registrarReglaProduccion("LiteralFlotante", scanner.obtenerTokenActual().valor);
 
     parser.consumirToken(true) // <LiteralFlotante>
+
+    return;
   }
 
   if (scanner.obtenerTokenActual().tipo === Lexema.Tipo.Cadena) {
@@ -220,6 +237,8 @@ const validarOperando = (validador, parser, scanner) => {
     validador.registrarReglaProduccion("LiteralCadena", scanner.obtenerTokenActual().valor);
 
     parser.consumirToken(true) // <LiteralCadena>
+
+    return;
   }
 
   if (scanner.obtenerTokenActual().tipo === Lexema.Tipo.Funcion) {
@@ -231,6 +250,8 @@ const validarOperando = (validador, parser, scanner) => {
   }
 
   if (scanner.obtenerTokenActual().tipo !== Lexema.Tipo.ParentesisApertura) {
+    parser.registrarError(MensajesErrorSintaxis.simboloInesperado);
+
     return;
   }
 
