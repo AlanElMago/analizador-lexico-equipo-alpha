@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tokenizador</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+  <p>Entrada:</p>
+  <textarea
+    id="entrada"
+    size="80"
+    rows="20"
+    onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"
+  >
+  </textarea>
+  <br />
+  <p>Salida:</p>
+  <textarea id="salida" cols="80" rows="20" readonly></textarea>
+  <br />
+  <button id="btn-tokenizar">Tokenizar</button>
+</body>
+
+<script type="module">
+  import { tokenizar } from '../js/tokenizador.js';
+
+  const button = document.querySelector('#btn-tokenizar');
+  const entrada = document.querySelector('#entrada');
+  const salida = document.querySelector('#salida');
+
+  button.addEventListener('click', () => {
+    const tokens = tokenizar(entrada.value);
+    salida.value = JSON.stringify(tokens, null, 2);
+  });
+</script>
+
+</html>

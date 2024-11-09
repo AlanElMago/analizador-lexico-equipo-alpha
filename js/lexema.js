@@ -41,6 +41,7 @@ export const Lexema = {
     CorcheteCierre: "corchete de cierre",
     LlaveApertura: "llave de apertura",
     LlaveCierre: "llave de cierre",
+    Indentacion: "indentacion",
     FinDeArchivo: "fin de archivo",
     Error: "error",
     Ilegal: "ilegal"
@@ -58,7 +59,7 @@ export const Lexema = {
     Id: /^[a-zA-Z_][a-zA-Z0-9_]*/,
     Flotante: /^[0-9]+\.[0-9]+/,
     Entero: /^[0-9]+/,
-    Comentario: /^(#.*|("""[\s\S]*?""")|('''[\s\S]*?'''))/,
+    Comentario: /^(#.*\n?|("""[\s\S]*?"""\n?)|('''[\s\S]*?'''\n?))/,
     Cadena: /^(['"][^'"]*['"])/,
     Comparacion: /^(==|!=|>=|<=|>|<)/,
     Aritmetico: /^(\*\*|\+|-|\*|\/|%)/,
@@ -69,7 +70,8 @@ export const Lexema = {
     CorcheteApertura: /^\[/,
     CorcheteCierre: /^\]/,
     LlaveApertura: /^\{/,
-    LlaveCierre: /^\}/
+    LlaveCierre: /^\}/,
+    Indentacion: /^\t/,
   },
 
   /**
