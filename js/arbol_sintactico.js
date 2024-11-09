@@ -1,3 +1,4 @@
+import { Lexema } from "./lexema.js";
 import { Token } from "./token.js";
 
 /**
@@ -44,7 +45,7 @@ export const construirArbolSintactico = (arregloNpi = []) => {
   for (let numArgumento = 0; numArgumento < arbol.token.numArgumentos; numArgumento++) {
     const tokenActual = arregloNpi[arregloNpi.length - 1]; 
 
-    if (tokenActual.esOperador()) {
+    if (tokenActual.esOperador() || tokenActual.tipo === Lexema.Tipo.Funcion) {
       arbol.hijos.unshift(construirArbolSintactico(arregloNpi));
     } else {
       arbol.hijos.unshift(new ArbolSintactico(arregloNpi.pop()));
