@@ -52,7 +52,7 @@ export const Lexema = {
    */
   Regex: {
     Funcion: /^(equipo|imprimir|entrada|suma|longitud|lista|cadena|rango|cremallera|flotante|entero|rebanada|redondear|tupla|tipo|ordenado|potencia|conjunto)\b/,
-    Reservada: /^(si|osi|sino|para|en)/,
+    Reservada: /^(si|osi|sino|para|mientras|en)/,
     Logico: /^(O|Y|NO)/,
     Booleano: /^(Verdadero|Falso)/,
     Nada: /^Nada/,
