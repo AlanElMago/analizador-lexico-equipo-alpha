@@ -11,44 +11,74 @@ export const tokenizar = (texto) => {
    * Extrae un token de una cadena dada utilizando una lista de expresiones regulares.
    * @param {string} texto - El código fuente donde se extraerá el token.
    * @param {Lexema.Regex} regexs - Un objeto que contiene las expresiones regulares a utilizar para la extracción.
-   * @param {number} columna - La columna de donde se extraerá el token dentro del código fuente.
+   * 
+   * 
+   * 
    * @returns {Token} El token extraído del código fuente. Si no se encuentra un token válido, retorna un token ilegal.
    */
-  const extraerToken = (texto, regexs, columna) => { 
-    const subcadena = texto.substring(columna);
+  const extraerToken = (texto, regexs, indiceTexto, linea, columna) => { 
+    const subcadena = texto.substring(indiceTexto);
 
     for (const regex in regexs) {
       let match = subcadena.match(regexs[regex]);
 
       if (match) {
         let valor = match[0];
-        let token = new Token(Lexema.obtenerTipo(valor), valor, columna);
+        let token = new Token(Lexema.obtenerTipo(valor), valor, linea, columna);
 
         return token;
       }
     }
 
-    return new Token(Lexema.Tipo.Ilegal, subcadena[0], columna);
+    return new Token(Lexema.Tipo.Ilegal, subcadena[0], linea, columna);
   }
 
   let tokens = [];
+  let linea = 1;
   let columna = 0;
+  let indiceTexto = 0;
 
-  while (columna < texto.length) {
-    // ignorar los espacios en blanco
-    if (/\s/.test(texto[columna])) {
-      columna++;
+  while (indiceTexto < texto.length) {
+    // salto de linea
+    if (/\n/.test(texto[indiceTexto])) {
+      linea++;
+      columna = 0;
+      indiceTexto++;
 
       continue;
     }
 
-    let token = extraerToken(texto, Lexema.Regex, columna);
+    // ignorar los espacios
+    if (/ /.test(texto[indiceTexto])) {
+      columna++;
+      indiceTexto++;
 
-    if (token.tipo === Lexema.Tipo.Comentario) {
-      break;
+      continue;
     }
 
-    const tokenAnterior = tokens[tokens.length - 1] ?? new Token(Lexema.Tipo.Nada, "Nada", -1);
+    let token = extraerToken(texto, Lexema.Regex, indiceTexto, linea, columna);
+
+    if (token.tipo === Lexema.Tipo.Comentario) {
+      columna += token.longitud;
+      indiceTexto += token.longitud;
+
+      if (token.valor.endsWith('\n')) {
+        linea++;
+        columna = 0;
+      }
+
+      continue;
+    }
+
+    const tokenAnterior = tokens[tokens.length - 1] ?? new Token(Lexema.Tipo.Nada, "Nada", 0, -1);
+
+    // si el token no es un tabulador para indentar, ignóralo
+    if (token.tipo === Lexema.Tipo.Indentacion && columna !== 0 && tokenAnterior.tipo !== Lexema.Tipo.Indentacion) {
+      columna++;
+      indiceTexto++;
+
+      continue;
+    }
 
     // si el token es el símbolo de menos, determinar si se trata de un menos unario
     if (token.valor === "-"
@@ -59,7 +89,7 @@ export const tokenizar = (texto) => {
           && tokenAnterior.tipo !== Lexema.Tipo.CorcheteCierre
           && tokenAnterior.tipo !== Lexema.Tipo.LlaveCierre
           || tokenAnterior.tipo === Lexema.Tipo.Nada)) {
-      token = new Token(Lexema.Tipo.MenosUnario, "-", columna);
+      token = new Token(Lexema.Tipo.MenosUnario, "-", linea, columna);
     }
 
     tokens.push(token);
@@ -69,10 +99,11 @@ export const tokenizar = (texto) => {
     }
 
     columna += token.longitud;
+    indiceTexto += token.longitud;
   }
 
   // insertar un token de fin de archivo al final del arreglo de tokens
-  tokens.push(new Token(Lexema.Tipo.FinDeArchivo, "EOF", texto.length));
+  tokens.push(new Token(Lexema.Tipo.FinDeArchivo, "EOF", linea, columna));
 
   return tokens;
 }
