@@ -11,16 +11,38 @@
 <body>
   <header>
     <img class="logo" src="img/logo.png" width="200" height="80">
-    <h1>UAT - UAMMC</h1>
     <img class= "logo2" src="img/logo2.png" width="270" height="80">
   </header>
 
   <div class="container">
-    <p>Grado y Grupo: 9° EFJ</p>
-    <p>Equipo: ALFA</p>
+    <div class="body-container">
+      <div class="titulo">
+        <p>9° EFJ 2024</p>
+      </div>
+
+      <div class="opciones">
+        <select name="archivo" id="archivo">
+          <option value="" disabled selected>Archivo</option>
+          <option value="nuevo">Nuevo</option>
+          <option value="guardar">Guardar</option>
+          <option value="abrir">Abrir</option>
+          <option value="guardarComo">Guardar como</option>
+          <option value="sair">Salir</option>
+        </select>
+      
+        <select name="compilar" id="compilar">
+          <option value="" disabled selected>Compilar</option>
+          <option value="revisar">Revisar errores</option>
+          <option value="traducir">Traducir</option>
+        </select>
+      </div>
+
+      <textarea class="entrada" id="entrada" rows="10" placeholder="//Código..."></textarea>
+    </div>
   </div>
 
-  <form class="form">
+
+  <!-- <form class="form">
     <h1>Analizador Léxico, Sintáctico y Semántico</h1>
     <p>Introduzca la instrucción que desea analizar:</p>
     <input class="entrada" id="entrada"type="text"/>
@@ -54,8 +76,22 @@
         <br>- Rebollar Cabriales Carlos Eduardo
       </p>
     </div>
-  </div>
+  </div> -->
+  <script>
+    const selectElementArchivo = document.getElementById('archivo');
+    const selectElementCompilar = document.getElementById('compilar');
 
+    selectElementArchivo.addEventListener('change', (event) => {
+      const selectedValueArchivo = event.target.value;
+      selectElementArchivo.selectedIndex = 0;
+    });
+
+    selectElementCompilar.addEventListener('change', (event) => {
+      const selectedValueCompilar = event.target.value;
+      selectElementCompilar.selectedIndex = 0;
+    });
+
+  </script>
   <script type="module" src="./js/index.js"></script>
 </body>
 
