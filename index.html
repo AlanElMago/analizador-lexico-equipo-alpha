@@ -4,57 +4,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Analizador Equipo ALFA</title>
+  <title>Compilador Equipo ALFA</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
   <header>
     <img class="logo" src="img/logo.png" width="200" height="80">
-    <h1>UAT - UAMMC</h1>
     <img class= "logo2" src="img/logo2.png" width="270" height="80">
   </header>
 
   <div class="container">
-    <p>Grado y Grupo: 9° EFJ</p>
-    <p>Equipo: ALFA</p>
+    <div class="body-container">
+      <div class="titulo">
+        <p>9° EFJ 2024</p>
+      </div>
+
+      <div class="opciones">
+        <div class="dropdown">
+          <button class="dropbtn">Archivo</button>
+          <div class="dropdown-content">
+            <input type="file" id="archivo" name="archivo" accept=".txt" />
+            <label for="archivo" class="custom-file-label">Abrir archivo</label>
+            <button id="btn-nuevo">Nuevo</button>
+            <button id="btn-guardar">Guardar</button>
+            <button id="btn-guardar-como">Guardar como</button>
+            <a href="./pages/analizador-lexico.html">Analizador Léxico</a>
+            <button id="btn-salir">Salir</button>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <button class="dropbtn">Compilar</button>
+          <div class="dropdown-content">
+            <button id="btn-revisar">Revisar</button>
+            <button id="btn-traducir">Traducir</button>
+          </div>
+        </div>
+      </div>
+
+      <textarea 
+        class="entrada" 
+        id="entrada" 
+        rows="10" 
+        placeholder="//Código..."
+        onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"
+      ></textarea>
+
+      <div class="logo">
+        <img src="img/logo3.png" width="100">
+      </div>
+
+      <textarea 
+        class="entrada" 
+        id="salida-traduccion"
+        rows="10"
+        placeholder="//Salida..."
+        readonly
+      ></textarea>
+
+      <textarea 
+        class="entrada" 
+        id="salida-errores"
+        rows="10"
+        placeholder="//Errores..."
+        readonly
+      ></textarea>
+    </div>
   </div>
 
-  <form class="form">
-    <h1>Analizador Léxico, Sintáctico y Semántico</h1>
-    <p>Introduzca la instrucción que desea analizar:</p>
-    <input class="entrada" id="entrada"type="text"/>
-    <div class="container_btn">
-      <button class="btn verde" id="btn-lexico">Analizador Léxico</button>
-      <button class="btn verde" id="btn-sintactico">Analizador Sintáctico</button>
-      <button class="btn verde" id="btn-lexico-y-sintactico">Analizador Léxico y Sintáctico</button>
-      <button class="btn verde" id="btn-semantico">Analizador Semántico</button>
-    </div>
-    <p>Análisis:</p>
-    <textarea class="output" id="salida" readonly></textarea>
-    <div id="tree-container"></div>
-    <button class="btn azul" id="btn-limpiar">Limpiar</button>
-    <button class="btn azul" id="btn-equipo">Equipo</button>
-    <button class="btn rojo" id="btn-salir">Salir</button>
-  </form>
-
-  <div id="Modal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <p>Equipo: ALFA
-        <br>Integrantes:
-        <br>- Franco Beltrán José Alan
-        <br>- González Ortíz Brayan de Jesús
-        <br>- González Paz Salma
-        <br>- González Regalado Efrain
-        <br>- Guerrero Aguilar Juan Manuel
-        <br>- Lozano Flores Angel Ezequiel
-        <br>- Martínez Rivera Milton Yahir
-        <br>- Ramos Rodríguez Cesia Keren
-        <br>- Rebollar Cabriales Carlos Eduardo
-      </p>
-    </div>
-  </div>
 
   <script type="module" src="./js/index.js"></script>
 </body>
