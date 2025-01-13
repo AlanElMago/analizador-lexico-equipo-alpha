@@ -6,7 +6,7 @@ Este proyecto consiste en la creación de un "compilador" para la materia de Pro
 
 Ingresar a la página del [compilador](https://compilador-equipo-alpha.vercel.app). 
 
-Para usar el "compilador", ingresa un código fuente escrito en Pitón y selecciona la opción de `Compiladr > Traducir`.
+Para usar el "compilador", ingresa un código fuente escrito en Pitón y selecciona la opción de `Compilar > Traducir`.
 
 ## Funciones soportadas
 
