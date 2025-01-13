@@ -32,18 +32,9 @@
 
     parser.parsear();
 
-    salida_analisis.value = parser.analisis.join("\n");
+    salida_analisis.value = parser.infoTokens.join("\n");
     salida_errores.value = parser.errores.join("\n");
   });
 </script>
 
 </html>
-  
-<!-- numero = entero(entrada("Ingrese un numero: "))
-
-si numero > 50:
-	imprimir("El numero es mayor que 50)
-osi numero >= 25:
-	imprimir("El numero es mayor o igual a 25")
-sino:
-	imprimir("El numero es menor que 25") -->
