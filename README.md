@@ -4,6 +4,8 @@ Este proyecto consiste en la creación de un "compilador" para la materia de Pro
 
 # Uso
 
+Ingresar a la página del [compilador](https://compilador-equipo-alpha.vercel.app). 
+
 Para usar el "compilador", ingresa un código fuente escrito en Pitón y selecciona la opción de `Compiladr > Traducir`.
 
 ## Funciones soportadas
@@ -89,6 +91,19 @@ for num in range(1, limite + 1):
 	else:
 		print(num)
 ```
+
+# Páginas adicionales
+
+| Página | Descripción |
+| --- | --- |
+| [Analizador Sintáctico](https://compilador-equipo-alpha.vercel.app/pages/analisis-sintactico.html) | Analiza la estructura una sola línea de código fuente |
+| [Analizador Semántico](https://compilador-equipo-alpha.vercel.app/pages/analisis-semantico.html) | Analiza las reglas semánticas una sola línea de código fuente |
+| [Analizador Semántico Multilínea](https://compilador-equipo-alpha.vercel.app/pages/analisis-semantico-multilinea.html) | Analiza las reglas semánticas de un código fuente con múltiples líneas |
+| [Tokenizador](https://compilador-equipo-alpha.vercel.app/pages/tokenizador.html) | Divide una sola línea de código fuente en tokens |
+| [Tokenizador Multilínea](https://compilador-equipo-alpha.vercel.app/pages/tokenizador-multilinea.html) | Divide un código fuente con múltiples líneas en tokens |
+| [Árbol Sintáctico](https://compilador-equipo-alpha.vercel.app/pages/arbol-sintactico.html) | Muestra el árbol sintáctico de una sola línea de código fuente |
+| [Notación Polaca](https://compilador-equipo-alpha.vercel.app/pages/notacion-polaca.html) | Convierte una expresión de una sola línea a su notación polaca y notación polaca inversa |
+| [Analizador](https://compilador-equipo-alpha.vercel.app/pages/analizador.html) | Muestra el análisis léxico, sintáctico y semántico de una sola línea de código fuente |
 
 # Integrantes del Equipo
 
