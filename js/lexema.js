@@ -41,6 +41,7 @@ export const Lexema = {
     CorcheteCierre: "corchete de cierre",
     LlaveApertura: "llave de apertura",
     LlaveCierre: "llave de cierre",
+    Indentacion: "indentacion",
     FinDeArchivo: "fin de archivo",
     Error: "error",
     Ilegal: "ilegal"
@@ -51,14 +52,14 @@ export const Lexema = {
    */
   Regex: {
     Funcion: /^(equipo|imprimir|entrada|suma|longitud|lista|cadena|rango|cremallera|flotante|entero|rebanada|redondear|tupla|tipo|ordenado|potencia|conjunto)\b/,
-    Reservada: /^(si|osi|sino|para|en)/,
+    Reservada: /^(sino|osi|si|para|mientras|en)/,
     Logico: /^(O|Y|NO)/,
     Booleano: /^(Verdadero|Falso)/,
     Nada: /^Nada/,
     Id: /^[a-zA-Z_][a-zA-Z0-9_]*/,
     Flotante: /^[0-9]+\.[0-9]+/,
     Entero: /^[0-9]+/,
-    Comentario: /^(#.*|("""[\s\S]*?""")|('''[\s\S]*?'''))/,
+    Comentario: /^(#.*\n?|("""[\s\S]*?"""\n?)|('''[\s\S]*?'''\n?))/,
     Cadena: /^(['"][^'"]*['"])/,
     Comparacion: /^(==|!=|>=|<=|>|<)/,
     Aritmetico: /^(\*\*|\+|-|\*|\/|%)/,
@@ -69,7 +70,8 @@ export const Lexema = {
     CorcheteApertura: /^\[/,
     CorcheteCierre: /^\]/,
     LlaveApertura: /^\{/,
-    LlaveCierre: /^\}/
+    LlaveCierre: /^\}/,
+    Indentacion: /^\t/,
   },
 
   /**

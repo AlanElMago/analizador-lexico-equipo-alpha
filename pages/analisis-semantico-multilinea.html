@@ -4,15 +4,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Analisis Sintactico</title>
+  <title>Tokenizador</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
   <p>Entrada:</p>
-  <input id="entrada" size="80" />
+  <textarea
+    id="entrada"
+    size="80"
+    rows="20"
+    onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"
+  >
+  </textarea>
+  <br />
   <p>Salida:</p>
-  <textarea id="salida-analisis" cols="80" rows="20" readonly></textarea>
+  <textarea id="salida-semantica" cols="80" rows="20" readonly></textarea>
   <textarea id="salida-errores" cols="80" rows="20" readonly></textarea>
   <button id="btn-tokenizar">Analizar</button>
 </body>
@@ -23,7 +30,7 @@
 
   const button = document.querySelector('#btn-tokenizar');
   const entrada = document.querySelector('#entrada');
-  const salida_analisis = document.querySelector('#salida-analisis');
+  const salida_semantica = document.querySelector('#salida-semantica');
   const salida_errores = document.querySelector('#salida-errores');
 
   button.addEventListener('click', () => {
@@ -31,8 +38,17 @@
     const parser = new Parser(scanner);
 
     parser.parsear();
+    const reglasProduccion = parser.validador.reglasProduccion;
 
-    salida_analisis.value = parser.infoTokens.join("\n");
+    const salida = [];
+    for (const [regla, valores] of Object.entries(reglasProduccion)) {
+      let linea = `${regla} -> `;
+
+      valores.forEach(valor => linea += `${valor} | `);
+      salida.push(linea.slice(0, -2));
+    }
+
+    salida_semantica.value = salida.join("\n");
     salida_errores.value = parser.errores.join("\n");
   });
 </script>

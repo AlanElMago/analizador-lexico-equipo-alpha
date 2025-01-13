@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tokenizador</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+  <p>Entrada:</p>
+  <textarea
+    id="entrada"
+    size="80"
+    rows="20"
+    onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"
+  >
+  </textarea>
+  <br />
+  <p>Salida:</p>
+  <textarea id="salida-traduccion" cols="80" rows="20" readonly></textarea>
+  <textarea id="salida-errores" cols="80" rows="20" readonly></textarea>
+  <button id="btn-nuevo">Nuevo</button>
+  <button id="btn-traducir">Traducir</button>
+  <button id="btn-guardar">Guardar</button>
+  <button id="btn-guardar-como">Guardar Como</button>
+  <input type="file" id="archivo" name="archivo" accept=".txt" />
+</body>
+
+<script type="module">
+  import { Scanner } from '../js/scanner.js';
+  import { Parser } from '../js/parser.js';
+  import { Traductor } from '../js/traductor.js';
+
+  const button = document.querySelector('#btn-traducir');
+  const entrada = document.querySelector('#entrada');
+  const nuevo = document.querySelector('#btn-nuevo');
+  const salida_traduccion = document.querySelector('#salida-traduccion');
+  const salida_errores = document.querySelector('#salida-errores');
+  const guardar = document.querySelector('#btn-guardar');
+  const guardarComo = document.querySelector('#btn-guardar-como');
+  const archivo = document.querySelector('#archivo');
+
+  button.addEventListener('click', () => {
+    const scanner = new Scanner(entrada.value);
+    const parser = new Parser(scanner);
+
+    parser.parsear();
+
+    if (parser.hayErrores()) {
+      salida_traduccion.value = '';
+      salida_errores.value = parser.errores.join("\n");
+
+      return;
+    } else {
+      salida_errores.value = '';
+    }
+
+    const traductor = new Traductor(scanner);
+    salida_traduccion.value = traductor.traducir();
+  });
+
+  nuevo.addEventListener('click', () => {
+    window.location.assign(window.location.href);
+  });
+
+  guardar.addEventListener('click', () => {
+    let enlace = document.createElement('a');
+
+    if(!salida_traduccion.value) {
+      enlace.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(salida_errores.value));
+      enlace.setAttribute('download', 'errores.txt');
+    } else {
+      enlace.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(salida_traduccion.value));
+      enlace.setAttribute('download', 'traduccion.py');
+    }
+
+    enlace.style.display = 'none';
+    document.body.appendChild(enlace);
+    enlace.click();
+    document.body.removeChild(enlace);
+  });
+
+  guardarComo.addEventListener('click', () => {
+    let enlace = document.createElement('a');
+    let nombre = prompt('Guardar archivo como...');
+
+    if(!salida_traduccion.value) {
+      enlace.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(salida_errores.value));
+      enlace.setAttribute('download', `${nombre}.txt`);
+    } else {
+      enlace.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(salida_traduccion.value));
+      enlace.setAttribute('download', `${nombre}.py`);
+    }
+    
+    enlace.style.display = 'none';
+    document.body.appendChild(enlace);
+    enlace.click();
+    document.body.removeChild(enlace);
+  });
+
+  archivo.addEventListener('change', () => {
+    const file = archivo.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        entrada.value = e.target.result;
+      };
+      reader.readAsText(file);
+    }
+  });
+</script>
+
+</html>

@@ -1,130 +1,124 @@
 import { Scanner } from './scanner.js';
 import { Parser } from './parser.js';
-import { generarArbolSintactico } from './arbol_d3.js';
+import { Traductor } from '../js/traductor.js';
 
-
-const btnLexico = document.getElementById('btn-lexico');
-const btnSintactico = document.getElementById('btn-sintactico');
-const btnLexicoSintactico = document.getElementById('btn-lexico-y-sintactico');
-const btnSemantico = document.getElementById('btn-semantico');
+const archivo = document.getElementById('archivo');
+const nuevo = document.getElementById('btn-nuevo');
+const guardar = document.getElementById('btn-guardar');
+const guardarComo = document.getElementById('btn-guardar-como');
+const button_salir = document.getElementById('btn-salir');
+const button = document.getElementById('btn-traducir');
+const button_revisar = document.getElementById('btn-revisar');
 const entrada = document.getElementById('entrada');
-const salida = document.getElementById('salida');
-const btnLimpiar = document.getElementById('btn-limpiar');
-const btnEquipo = document.getElementById('btn-equipo');
-const btnSalir = document.getElementById('btn-salir');
+const salida_traduccion = document.getElementById('salida-traduccion');
+const salida_errores = document.getElementById('salida-errores');
 
-const analisisLexico = () => {
-  const texto = entrada.value;
-  const scanner = new Scanner(texto);
-  const parser = new Parser(scanner);
-
-  parser.parsear();
-
-  salida.value = parser.infoTokens.join("\n");
-
-  if (parser.hayErrores()) {
-    salida.value += "\n";
-    salida.value += parser.errores.join("\n");
-  }
-}
-
-const analisisSintactico = () => {
-  const texto = entrada.value;
-  const scanner = new Scanner(texto);
-  const parser = new Parser(scanner);
-  const arbol = parser.parsear();
-
-  generarArbolSintactico(arbol);
-};
-
-
-
-btnLexico.addEventListener('click', (event) => {
-  event.preventDefault();
-
-  salida.style.display = 'block';
-  document.getElementById("tree-container").innerHTML = "";
-  document.getElementById("tree-container").style.display = 'none';
-
-  analisisLexico();
-});
-
-btnSintactico.addEventListener('click', (event) => {
-  event.preventDefault();
-
-  salida.style.display = 'none';
-  document.getElementById("tree-container").innerHTML = "";
-  document.getElementById("tree-container").style.display = 'block';
-
-  analisisSintactico();
-})
-
-btnLexicoSintactico.addEventListener('click', (event) => {
-  event.preventDefault();
-
-  salida.style.display = 'block';
-  document.getElementById("tree-container").innerHTML = "";
-  document.getElementById("tree-container").style.display = 'block';
-
-  analisisLexico();
-  analisisSintactico();
-});
-
-btnSemantico.addEventListener('click', (event) => {
-  event.preventDefault();
-
+//Función para traducir
+button.addEventListener('click', () => {
   const scanner = new Scanner(entrada.value);
   const parser = new Parser(scanner);
 
   parser.parsear();
-  const reglasProduccion = parser.validador.reglasProduccion;
 
-  const salidaa = [];
-  for (const [regla, valores] of Object.entries(reglasProduccion)) {
-    let linea = `${regla} -> `;
-
-    valores.forEach(valor => linea += `${valor} | `);
-    salidaa.push(linea.slice(0, -2));
-  }
-
-  salida.value = salidaa.join("\n");
   if (parser.hayErrores()) {
-    salida.value += "\n";
-    salida.value += parser.errores.join("\n");
+    salida_traduccion.value = '';
+    salida_errores.value = parser.errores.join("\n");
+
+    return;
+  } else {
+    salida_errores.value = '';
   }
 
-  console.log(salidaa);
+  const traductor = new Traductor(scanner);
+  salida_traduccion.value = traductor.traducir();
 });
 
-btnLimpiar.addEventListener('click', (event) => {
-  event.preventDefault();
+//Crear nuevo archivo
+nuevo.addEventListener('click', () => {
+  window.location.assign(window.location.href);
+});
 
-  entrada.value = "";
-  salida.value = "";
-  salida.style.display = 'block';
-  
-  const treeContainer = document.getElementById("tree-container");
-  while (treeContainer.firstChild) {
-      treeContainer.removeChild(treeContainer.firstChild);
+//Función para guardar archivo
+guardar.addEventListener('click', () => {
+  let enlace = document.createElement('a');
+
+  if (salida_traduccion.value.trim()) {
+    enlace.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(salida_traduccion.value));
+    enlace.setAttribute('download', 'traduccion.py');
+  } else if (salida_errores.value.trim()) {
+    enlace.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(salida_errores.value));
+    enlace.setAttribute('download', 'errores.txt');
+  } else if (entrada.value.trim()) {
+    enlace.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(entrada.value));
+    enlace.setAttribute('download', 'codigo.txt');
+  } else {
+    alert("No hay contenido para guardar.");
+    return;
+  }
+
+  enlace.style.display = 'none';
+  document.body.appendChild(enlace);
+  enlace.click();
+  document.body.removeChild(enlace);
+});
+
+//Función para guardar archivo con nombre
+guardarComo.addEventListener('click', () => {
+  let enlace = document.createElement('a');
+  let nombre = prompt('Guardar archivo como...');
+
+  if (!nombre) {
+    alert("Debes proporcionar un nombre para el archivo.");
+    return;
+  }
+
+  if (salida_traduccion.value.trim()) {
+    enlace.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(salida_traduccion.value));
+    enlace.setAttribute('download', `${nombre}.py`);
+  } else if (salida_errores.value.trim()) {
+    enlace.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(salida_errores.value));
+    enlace.setAttribute('download', `${nombre}.txt`);
+  } else if (entrada.value.trim()) {
+    enlace.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(entrada.value));
+    enlace.setAttribute('download', `${nombre}.txt`);
+  } else {
+    alert("No hay contenido para guardar.");
+    return;
+  }
+
+  enlace.style.display = 'none';
+  document.body.appendChild(enlace);
+  enlace.click();
+  document.body.removeChild(enlace);
+});
+
+//Función para cargar archivo
+archivo.addEventListener('change', () => {
+  const file = archivo.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      entrada.value = e.target.result;
+    };
+    reader.readAsText(file);
   }
 });
 
-btnEquipo.addEventListener('click', (event) => {
-  event.preventDefault();
-  document.getElementById('Modal').style.display = 'block';
-});
+//Función para revisar errores
+button_revisar.addEventListener('click', () => {
+  const scanner = new Scanner(entrada.value);
+  const parser = new Parser(scanner);
 
-document.getElementsByClassName('close')[0].addEventListener('click', () => {
-  document.getElementById('Modal').style.display = 'none';
-});
+  parser.parsear();
 
-window.addEventListener('click', (event) => {
-  if (event.target == document.getElementById('Modal')) {
-    document.getElementById('Modal').style.display = 'none';
+  if (parser.hayErrores()) {
+    salida_errores.value = parser.errores.join("\n");
+  } else {
+    salida_errores.value = 'No hay errores';
   }
 });
 
-btnSalir.addEventListener('click', (event) => {
+button_salir.addEventListener('click', (event) => {
   event.preventDefault();
   window.close();
 });

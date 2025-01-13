@@ -34,7 +34,7 @@ export class Parser {
 
     /**
      * El analizador semántico que valida las reglas de producción del código fuente.
-      * @type {Validador}
+     * @type {Validador}
      */
     this.validador = new Validador();
   };
@@ -49,6 +49,8 @@ export class Parser {
     // validar la gramática del código fuente
     this.validador.validar(this, this.scanner);
 
+    this.scanner.reiniciar();
+
     if (this.hayErrores()) {
       const tokenError = new Token(Lexema.Tipo.Error, "Error de Sintaxis");
 
@@ -57,6 +59,12 @@ export class Parser {
 
     if (this.scanner.obtenerTokenActual().tipo === Lexema.Tipo.Reservada) {
       const tokenError = new Token(Lexema.Tipo.Error, "Operación no Soportada");
+
+      return new ArbolSintactico(tokenError);
+    }
+
+    if (this.scanner.obtenerNumLineas() > 1) {
+      const tokenError = new Token(Lexema.Tipo.Error, "Múltiples líneas no soportada");
 
       return new ArbolSintactico(tokenError);
     }
